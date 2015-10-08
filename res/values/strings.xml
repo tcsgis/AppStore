@@ -1,5 +1,54 @@
 <resources>
 
-    <string name="app_name">AppStroe</string>
+    <string name="AlarmAnniServiceNotify">AlarmAnniReceiver_new_anni</string>
+    <string name="MessageServiceNotify">MessageServiceNotify</string>
+    <string name="LocationUpLoadTask">LocationUpLoadTask</string>
+    <string name="ok_queren">确认</string>
+    <string name="cancel_quxiao">取消</string>
+    <string name="health">健康</string>
+    <string name="waitting">敬请期待</string>
+    <string name="input_min_len">输入的信息不能小于%1$s哦!</string>
+    <string name="input_max_len">输入的信息不能超过%1$s哦!</string>
+    <string name="local">在哪儿</string>
+    <string name="family_location">家庭位置</string>
+    <string name="my_family">我的家人</string>
+    <string name="input_count_null">输入的信息不能为空哦!</string>
+    <string name="photo_wall">照片墙</string>
+    <string name="data_loading">正在努力的处理中&#8230;请稍后</string>
+    <string name="login_again">重新登录</string>
+    <string name="login_other_alert">下线通知</string>
+    <string name="login_other_alertinfo">你的账号正在另一台手机登录。如非本人操作，则密码可能已泄露，建议及时修改账号密码.</string>
+    <string name="err_opt_noright">数据已被更新或删除!</string>
+    <string name="photo_select_local">从相册选取</string>
+    <string name="photo_select_camera">拍照</string>
+    <string name="update_version">"版本升级"</string>
+    <string name="get_location_data">获取本地数据</string>
+    <string name="input_count_reach_max">您输入的文字个数达到了最大数量哦！</string>
+    <string name="done">完成</string>
+    <string name="word_count">100</string>
+    <string name="cancel">取消</string>
+    <string name="send_success">发送成功</string>
+    <string name="send_failed">发送失败</string>
+    <string name="confirm">确定</string>
+    <string name="delete">删除</string>
+    <string name="select_birthday_unreasonable">选择的日期不合理，请重新选择！</string>
+    <string name="last_online">上次在线时</string>
+    <string name="unable_get_data">获取数据失败!</string>
+    <string name="load_full">已加载全部</string>
+    <string name="no_data">暂无数据</string>
+    <string name="loading">加载中</string>
+    <string name="photo_select_restore">恢复默认图片</string>
+    <string name="there_is_new_msg">您有%1$s条新消息</string>
+    <string name="pull_down_pull_label">下拉刷新…</string>
+    <string name="pull_down_release_label">放开以刷新…</string>
+    <string name="pull_down_refreshing_label">正在刷新…</string>
+    <string name="pull_up_pull_label">上拉加载…</string>
+    <string name="pull_up_release_label">放开以加载…</string>
+    <string name="pull_up_refreshing_label">正在载入…</string>
+    <string name="pull_refresh_no_more_info">没有更多了</string>
+    <string name="dis_string1">选择省市区</string>
+    <string name="dis_string2">确    定</string>
+    <string name="dp_string1">请选择日期</string>
+    <string name="dp_string2">请选择时间</string>
 
 </resources>

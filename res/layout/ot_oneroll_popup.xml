@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    
+    <LinearLayout 
+        android:id="@+id/gender_pop_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1F1F1"
+        android:orientation="horizontal"
+        android:gravity="right">
+    	<Button android:id="@+id/btn_gender_comfirm"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_gravity="center_vertical"
+        	android:layout_marginRight="20dp"
+        	android:layout_marginTop="8dp"
+        	android:layout_marginBottom="8dp"
+        	android:background="@drawable/signup_reget"
+        	android:text="@string/done"
+        	android:textColor="#0066ff"
+        	android:textSize="15sp"/>
+     </LinearLayout>
+	<com.changhong.activity.widget.other.datepicker.WheelOnRollPicker
+      	android:id="@+id/popup_gender_picker"
+      	android:layout_below="@id/gender_pop_bar"
+        android:layout_width="match_parent"
+        android:layout_height="215dp" /> 
+
+	<com.changhong.activity.widget.other.datepicker.WheelDoubleRollPicker 
+	    android:id="@+id/popup_double_picker"
+      	android:layout_below="@id/gender_pop_bar"
+        android:layout_width="match_parent"
+        android:layout_height="215dp"
+        android:visibility="gone"
+	    />
+</RelativeLayout>

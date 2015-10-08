@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="6dp"
+    android:orientation="vertical" >
+    
+    <com.changhong.activity.widget.input.ExpandGridView
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/size_ee"
+        android:numColumns="auto_fit"
+        android:stretchMode="spacingWidth"
+        android:scrollbars="none"
+        android:verticalSpacing="5dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:fadingEdge="none"
+        />
+
+</LinearLayout>

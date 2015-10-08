@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="activity_title_back">#4E676C</color>
+    <color name="activity_title_txt">#ffffff</color>
+    <color name="activity_back">#DBDCDB</color>
+    <color name="btn_unclick">#717070</color>
+    <color name="btn_click">#4E676C</color>
+    <color name="btn_txt">#ffffff</color>
+    <color name="gray_txt">#666666</color>
+    <color name="btn_invalid_color">#706F70</color>
+    <color name="btn_valid_color">#4E676C</color>
+    <color name="divide_line">#959696</color>
+    <color name="province_line_border">#C7C7C7</color>
+    <color name="custom_order_gray">#4E4C4B</color>
+
+</resources>

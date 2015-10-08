@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/salon_rating_bar</item>
+        <item name="android:minHeight">23dp</item>
+        <item name="android:maxHeight">23dp</item>
+    </style>
+    
+    <style name="MyRatingBar2" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/salon_rating_bar2</item>
+        <item name="android:minHeight">11.5dp</item>
+        <item name="android:maxHeight">11.5dp</item>
+    </style>
+</resources>

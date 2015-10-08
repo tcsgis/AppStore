@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="welcom_back">#D7EBDB</color>
+    <color name="welcom_text">#996ABD78</color>
+    <color name="line">#dfdfdf</color>
+    <color name="line2">#e2e2e2</color>
+    <color name="hint">#c2c2c2</color>
+    <color name="popup_back">#6ABD78</color>
+    <color name="popup_line">#6FB47A</color>
+    <color name="txt_green">#68BE75</color>
+    <color name="txt_gray2">#666666</color>
+    <color name="back2">#469D53</color>
+    
+    
+    
+    
+    <color name="transparent">#00000000</color>
+    <color name="ivory">#FFFFF0</color>
+    <color name="tan">#D2B48C</color>
+    <color name="dimgray">#717171</color>
+    <color name="dimgrayt">#CC696969</color>
+    <color name="mfgrayt">#CCa3a3a3</color>
+    <color name="family_address_adapter">#808080</color>
+    <color name="alpha20">#32000000</color>
+    
+    <!-- #CC000000 -->
+    <color name="dimblack">#CC000000</color>
+    <color name="black">#000000</color>
+    <color name="darkgray">#A9A9A9</color>
+    <color name="dimwrite">#ccFFFFFF</color>
+    <color name="bg_abstruct">#F5F5F5</color>
+    <color name="text_abstruct">#3E3E3E</color>
+    <color name="white">#FFFFFF</color>
+    <color name="family_shadow">#CC4D4D4D</color>
+    <color name="family_create_join">#AEAEAE</color>
+    <color name="footfind_calender">#EAEAEA</color>
+    <color name="footfind_textcolor">#3c3c3c</color>
+    <color name="signup_top_bar">#ED5736</color>
+    <color name="forget_passwd">#E54A28</color>
+    <color name="hint_color">#CDCBC8</color>
+    <color name="address_color">#8A8A8A</color>
+    <color name="auto_login">#6A6A6A</color>
+    <color name="text_color">#686868</color>
+    <color name="unit_color">#b7b4b1</color>
+    <color name="num_color">#d3d3d3</color>
+    <color name="gray">#ffcccccc</color>
+    <color name="create_red">#ed5736</color>
+    <color name="create_gray">#cccccc</color>
+    <color name="change_passw_color">#565656</color>
+    <color name="setting_gray">#4d4d4d</color>
+
+    <drawable name="darkgrayz">#FFA9A9A9</drawable>
+    <drawable name="dimblackz">#CC000000</drawable>
+    <drawable name="dimwhitez">#ccFFFFFF</drawable>
+    <drawable name="click_background_color">#e4e4e4</drawable>
+    <drawable name="white">#FFFFFF</drawable>
+
+    <!-- llw start -->
+    <color name="background">#f8f8f8</color>
+    <color name="title_back">#6ABD78</color>
+    <color name="title_back2">#aa6ABD78</color>
+    <color name="txt_hint">#b8b8b8</color>
+    <color name="txt_btn_light">#ffffff</color>
+    <color name="txt_btn_dark">#3dd1cf</color>
+    <color name="txt_title">#ffffff</color>
+    <color name="txt_item_gray">#a6a6a6</color>
+    <color name="txt_gray">#a0a0a0</color>
+    <color name="txt_dark_gray">#686868</color>
+    <color name="txt_black">#000000</color>
+    <!-- llw end -->
+
+
+    <!-- quxy start -->
+    <color name="none_color">#00000000</color>
+    <color name="bule_overlay">#660D92DD</color>
+    <!-- quxy end -->
+
+	
+	<!-- cxp st-->
+	<color name="clr_f8">#f8f8f8</color>
+	<color name="clr_3e">#3e3e3e</color>
+	<color name="txt_orange">#ff722f</color>
+	
+	<!-- cxp end-->
+
+	
+	<!-- hua -->
+    <color name="orange">#ff8a01</color>
+    <color name="deep_gray">#666666</color>
+    <color name="light_gray">#cfcfcf</color>
+    <color name="dark_orange">#c87000</color>
+    <color name="translucent_80_dark">#cc000000</color>
+    <color name="light_s_gray">#d9d9d9</color>
+    <color name="deep_s_gray">#454545</color>
+    <!-- 时间选择器 -->
+    <color name="split_line_gray">#B8B8B8</color>
+    <color name="picker_bar_bg">#F5F5F5</color>
+
+    
+	<!-- hyn -->
+	<color name="progress_blue">#4FD5D3</color>
+
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="txt_large_size">18sp</dimen>
+    <dimen name="txt_normal_size">15sp</dimen>
+    <dimen name="txt_small_size">13sp</dimen>
+    <dimen name="txt_smaller_size">14sp</dimen>
+    <dimen name="txt_tiny_size">12sp</dimen>
+    <dimen name="divide_line_height">2dp</dimen>
+    
+    <dimen name="btn_normal_size">14sp</dimen>
+    
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+    
+    <!-- 字体大小 -->
+    <dimen name="font_size_s_large">52px</dimen>
+    <dimen name="font_size_s_normal">42px</dimen>
+    <dimen name="font_size_s_small">32px</dimen>
+
+    <!-- 时间选择器：滚轮行高 -->
+    <dimen name="wheel_line_split_height">80px</dimen>
+    
+    <!-- popup input -->
+    <dimen name="size_expression">30dp</dimen>
+    <dimen name="height_top_bar">48dp</dimen>
+    <dimen name="padding_search_bar">5dp</dimen>
+    <dimen name="height_row_weixin">59dp</dimen>
+    <dimen name="size_avatar">45dp</dimen>
+    <dimen name="margin_chat_activity">5dp</dimen>
+    <dimen name="field_textsize">14sp</dimen>
+    <dimen name="field_margin_right">5dp</dimen>
+    <dimen name="call_button_padding_vertical">10dp</dimen>
+    <dimen name="call_button_padding_left">25dp</dimen>
+    <dimen name="call_button_padding_right">25dp</dimen>
+    <dimen name="sidebar_text_size">10dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="image_thumbnail_size">100dp</dimen>
+    <dimen name="image_thumbnail_spacing">1dp</dimen>
+    <dimen name="size_ee">54dp</dimen>
+    <dimen name="height_ee_container">166dp</dimen>
+    <dimen name="height_top_title">18dp</dimen>
+</resources>

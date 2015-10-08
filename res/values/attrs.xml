@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="IconEditText">
+        <attr name="icon" format="reference" />
+        <attr name="hint" format="string" />
+        <attr name="inputType">
+            <enum name="normal" value="0" />
+            <enum name="number" value="1" />
+            <enum name="phone" value="2" />
+            <enum name="password" value="3" />
+        </attr>
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="err" format="string" />
+    </declare-styleable>
+    <declare-styleable name="PicCheckBox">
+        <attr name="background" format="reference" />
+        <attr name="checked" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="SmartImageButton">
+        <attr name="src" format="reference" />
+        <attr name="gravity">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+            <enum name="top" value="2" />
+            <enum name="bottom" value="3" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="SmartLevelView">
+        <attr name="level" format="integer" />
+    </declare-styleable>
+    
+    
+    <declare-styleable name="wheel">
+        <attr name="lineSplitHeight" format="reference|integer" />
+        <attr name="textColorFirst" format="reference|color" />
+        <attr name="textColorSecond" format="reference|color" />
+        <attr name="textColorThird" format="reference|color" />
+        <attr name="splitLineColor" format="reference|color" />
+        <attr name="textSizeFirst" format="reference|integer" />
+         <attr name="textSizeSecond" format="reference|integer" />
+          <attr name="textSizeThird" format="reference|integer" />
+        <attr name="textGravity">
+            <flag name="left" value="-1" />
+            <flag name="center" value="0" />
+            <flag name="right" value="1" />
+        </attr>
+    </declare-styleable>
+
+        <declare-styleable name="RippleView">
+        <attr name="rv_alpha" format="integer" />
+        <attr name="rv_framerate" format="integer"/>
+        <attr name="rv_rippleDuration" format="integer"/>
+        <attr name="rv_zoomDuration" format="integer" />
+        <attr name="rv_color" format="color" />
+        <attr name="rv_centered" format="boolean" />
+        <attr name="rv_type" format="enum">
+            <enum name="simpleRipple" value="0"/>
+            <enum name="doubleRipple" value="1"/>
+            <enum name="rectangle" value="2" />
+        </attr>
+        <attr name="rv_ripplePadding" format="dimension" />
+        <attr name="rv_zoom" format="boolean" />
+        <attr name="rv_zoomScale" format="float" />
+
+    </declare-styleable>
+</resources>
