@@ -25,7 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 
-import com.aaa.activity.MainActivity;
+import com.aaa.activity.main.MainActivity;
 import com.changhong.util.CHLogger;
 
 public class CHAppManager

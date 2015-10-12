@@ -26,7 +26,7 @@ import android.widget.Toast;
 import cn.changhong.chcare.core.webapi.util.TokenManager;
 
 import com.llw.AppStore.R;
-import com.aaa.activity.MainActivity;
+import com.aaa.activity.main.MainActivity;
 import com.changhong.CHApplication;
 import com.changhong.common.AndroidVersionCheckUtils;
 import com.changhong.util.cache.CHExternalOverFroyoUtils;

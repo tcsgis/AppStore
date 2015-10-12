@@ -13,5 +13,13 @@
     <color name="divide_line">#959696</color>
     <color name="province_line_border">#C7C7C7</color>
     <color name="custom_order_gray">#4E4C4B</color>
+    
+   <!--  <color name="primary">#009688</color> -->
+    <color name="primary">#4884BA</color>
+    <color name="primary_txt">#31A0FE</color>
+    <color name="primaryDark">#00796b</color>
+    <color name="accent">#eeff41</color>
+    <color name="accentLight">#F4FF81</color>
+	<color name="material_blue_500">#5677fc</color>
 
 </resources>

@@ -17,7 +17,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 
-import com.aaa.activity.MainActivity;
+import com.aaa.activity.main.MainActivity;
 import com.changhong.CHApplication;
 import com.changhong.activity.util.PollingUtils;
 import com.changhong.service.task.AlarmOnObserver;
@@ -87,7 +87,7 @@ public class PollingService extends Service {
 			tasks.put(R.string.MessageServiceNotify, AlarmMessageReceiver.getInstance());
 			
 			mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			int icon = R.drawable.logo_salon;
+			int icon = R.drawable.icon;
 			mNotification = new Notification();
 			mNotification.icon = icon;
 			mNotification.tickerText = "梳妆台";

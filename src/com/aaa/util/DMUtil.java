@@ -88,7 +88,7 @@ public class DMUtil {
 		return else_photo_height < 0 ? (int) (ELSE_PHOTO_H * getDensity(activity)) : else_photo_height;
 	}
 	
-	public static int getHeight(Activity activity, int dp){
+	public static int getLength(Activity activity, int dp){
 		return (int) (dp * getDensity(activity));
 	}
 	

@@ -2,7 +2,6 @@
 <resources>
 
     <declare-styleable name="IconEditText">
-        <attr name="icon" format="reference" />
         <attr name="hint" format="string" />
         <attr name="inputType">
             <enum name="normal" value="0" />
@@ -15,7 +14,6 @@
         <attr name="err" format="string" />
     </declare-styleable>
     <declare-styleable name="PicCheckBox">
-        <attr name="background" format="reference" />
         <attr name="checked" format="boolean" />
     </declare-styleable>
     <declare-styleable name="SmartImageButton">
