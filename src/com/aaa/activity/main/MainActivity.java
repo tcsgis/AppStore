@@ -17,6 +17,7 @@
 package com.aaa.activity.main;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,11 +26,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 
-import com.aaa.util.DMUtil;
-import com.changhong.util.CHLogger;
+import com.aaa.activity.download.DownloadActivity;
+import com.aaa.activity.me.MeActivity;
+import com.aaa.activity.search.SearchActivity;
+import com.aaa.util.Constant;
 import com.github.ksoichiro.android.observablescrollview.CacheFragmentStatePagerAdapter;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.image);
         overlayView = findViewById(R.id.overlay);
         titleView = (EditText) findViewById(R.id.title);
+        titleView.setVisibility(View.GONE);
         
         // Initialize the first Fragment's state when layout is completed.
         ScrollUtils.addOnGlobalLayoutListener(mSlidingTabLayout, new Runnable() {
@@ -90,6 +95,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
+        findViewById(R.id.download_manage).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
+				startActivity(intent);
+			}
+		});
+        
+        findViewById(R.id.me).setOnClickListener(new OnClickListener() {
+        	
+        	@Override
+        	public void onClick(View v) {
+        		Intent intent = new Intent(MainActivity.this, MeActivity.class);
+				startActivity(intent);
+        	}
+        });
+        
+//        titleView.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+//				startActivity(intent);
+//			}
+//		});
     }
 
     /**
@@ -210,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private static class NavigationAdapter extends CacheFragmentStatePagerAdapter {
 
-        private static final String[] TITLES = new String[]{"热门", "游戏", "应用", "其他"
+        private static final String[] TITLES = new String[]{"热点", "游戏", "应用", "其他"
         	/*, "Eclair", "Froyo", "Gingerbread", "Honeycomb", "Ice Cream Sandwich", "Jelly Bean", "KitKat", "Lollipop"*/};
 
         private int mScrollY;
@@ -225,8 +256,25 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Fragment createItem(int position) {
-            FlexibleSpaceWithImageBaseFragment f;
-            f = new FlexibleSpaceWithImageRecyclerViewFragment();
+        	FlexibleSpaceWithImageBaseFragment f;
+        	switch (position) {
+			case 0:
+				f = new FlexibleSpaceWithImageRecyclerViewFragment(Constant.RE_DIAN);
+				break;
+				
+			case 1:
+				f = new FlexibleSpaceWithImageRecyclerViewFragment(Constant.YOU_XI);
+				break;
+				
+			case 2:
+				f = new FlexibleSpaceWithImageRecyclerViewFragment(Constant.YING_YONG);
+				break;
+				
+			case 3:
+			default:
+				f = new FlexibleSpaceWithImageRecyclerViewFragment(Constant.QI_TA);
+				break;
+			}
             f.setArguments(mScrollY);
             return f;
         }

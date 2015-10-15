@@ -2,5 +2,53 @@
 <resources>
 
     <string name="app_name">app</string>
+    <string name="download">下载</string>
+    <string name="continue_txt">继续</string>
+    <string name="pause">暂停</string>
+    <string name="install">安裝</string>
 
+    <!-- DetailActivity -->
+    <string name="da_string1">应用介绍</string>
+    <string name="da_string2">%1$sM</string>
+    <string name="da_string3">下载(%1$sM)</string>
+    <string name="da_string4">《梦幻西游》手游由梦幻西游团队倾力打造，网易CEO丁磊亲自担纲监制，成就回合制MMORPG手游巅峰之作！\n
+Q版造型的可爱人物，浓郁古典风的精美场景，优化更新的经典玩法，尽在手游重现，随时随地领略与端游截然不同的精彩与快乐！\n
+梦幻西游唯一手游，国民回合，再现江湖，不可错过！\n
+【游戏特色】\n
+—师门捉鬼，挖宝押镖\n
+网易出品，经典玩法原汁原味。继承端游经典设计与玩法，并对其进行再诠释，玩家将感受到梦幻角色的全新风貌；\n
+—精锐神威，决斗皇城\n
+萌宠神兵，纵横三界称霸天下。三界门派英雄优雅冷峻，调和阴阳，洞察众生，予你顶级神话体验；\n
+—三界仙魔，听你调遣\n
+免费使用，真心伙伴不谈金钱。全新西游，各路仙魔任你调遣，许你不缩水的梦幻之旅；\n
+—真实摆摊，自由交易\n
+告别单机，白手起家富甲天下。互动乐趣经典游戏不可错过，神作再临，摆摊交易沟通梦幻与现实；\n
+—再续征程，不可错过\n
+从零开始，和你一起再续经典。技能特效、风格造型精彩绚丽、美轮美奂，西游手游巅峰之作升级你的西游征程。</string>
+
+     <!-- DownloadActivity -->
+    <string name="doA_string1">下载管理</string>
+    <string name="doA_string2">下载任务</string>
+    <string name="doA_string3">全部开始</string>
+    <string name="doA_string4">全部暂停</string>
+    <string name="doA_string5">已暂停</string>
+    <string name="doA_string6">下载完成</string>
+    <string name="doA_string7">清空记录</string>
+    <string name="doA_string8">详情</string>
+    <string name="doA_string9">暂无下载\n快去看看有什么好玩的吧</string>
+    <string name="doA_string10">%1$dK/S</string>
+    
+    <!-- MeActivity -->
+    <string name="me_string1">个人中心</string>
+    <string name="me_string2">请登录账号</string>
+    <string name="me_string3">下载记录</string>
+    
+     <!-- LoginActivity -->
+    <string name="login_string1">登         录</string>
+    <string name="login_string2">手机号</string>
+    <string name="login_string3">验证码</string>
+    <string name="login_string4">获得验证码</string>
+    <string name="login_string5">登         录</string>
+    <string name="login_string6">%1$ds后重新获取</string>
+    
 </resources>

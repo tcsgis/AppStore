@@ -8,7 +8,7 @@
 */  
 package com.changhong.util.db.bean;  
 
-import cn.changhong.chcare.core.webapi.bean.User;
+import com.aaa.db.AppUser;
 
 /**  
  * 
@@ -20,14 +20,14 @@ import cn.changhong.chcare.core.webapi.bean.User;
  */
 public class CacheManager {
 	//账号相关的基本信息
-	private volatile User currentUser=null;
+	private volatile AppUser currentUser=null;
 	
 	
-	public User getCurrentUser() {
+	public AppUser getCurrentUser() {
 		return currentUser;
 	}
 
-	public synchronized void setCurrentUser(User currentUser) {
+	public synchronized void setCurrentUser(AppUser currentUser) {
 		this.currentUser = currentUser;
 	}
 

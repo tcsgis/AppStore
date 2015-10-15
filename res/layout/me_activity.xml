@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/activity_back"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/primary" >
+
+        <RelativeLayout
+            android:id="@+id/rl_left"
+            android:layout_width="50dp"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/btn_left"
+                android:layout_width="12dp"
+                android:layout_height="19dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/back_white" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/me_string1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/txt_large_size" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:background="@color/primary"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/portrait"
+            android:layout_width="@dimen/me_activity_photo_zise"
+            android:layout_height="@dimen/me_activity_photo_zise"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/face_bg" />
+
+        <TextView
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="42dp"
+            android:background="@drawable/me_txt_back"
+            android:drawableRight="@drawable/right_white"
+            android:paddingBottom="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="4dp"
+            android:text="@string/me_string2"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/download_activity_padding"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/downloaded_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/download_activity_padding"
+            android:background="@color/gray"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="0.5dp"
+                android:background="@color/white"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/download_activity_list_padding"
+                    android:text="@string/me_string3"
+                    android:textColor="@color/detail_txt_color"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/btn_downloaded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/download_activity_list_padding"
+                    android:text="@string/doA_string7"
+                    android:textColor="@color/download_activity_txt_green" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/null_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:gravity="center"
+                android:paddingBottom="200dp"
+                android:paddingTop="100dp"
+                android:text="@string/doA_string9"
+                android:textColor="@color/gray_txt"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <ListView
+                android:id="@+id/downloaded_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:scrollbars="none"
+                android:visibility="visible" >
+            </ListView>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

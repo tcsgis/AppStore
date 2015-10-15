@@ -16,6 +16,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:color="@color/primary_txt" android:state_selected="true" />
-    <item android:color="@color/gray" />
+    <item android:color="@color/black" />
 
 </selector>

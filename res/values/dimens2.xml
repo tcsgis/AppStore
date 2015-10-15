@@ -26,5 +26,27 @@
     <dimen name="llw_flexible_space_image_height">240dp</dimen>
     <dimen name="title_height">48dp</dimen>
     <dimen name="main_title_initial_width">264dp</dimen>
+    
+    
+    <dimen name="main_item_padding">13dp</dimen>
+    
+    <dimen name="detail_img_width">110dp</dimen>
+    <dimen name="detail_img_height">182dp</dimen>
+    
+    <dimen name="progressbar_radius">5dp</dimen>
 
+    <dimen name="download_activity_padding">10dp</dimen>
+    <dimen name="download_activity_list_padding">15dp</dimen>
+    <dimen name="download_activity_item_height">146dp</dimen>
+    <dimen name="download_activity_item_height1">92dp</dimen>
+    <dimen name="download_activity_item_height2">54dp</dimen>
+    <dimen name="download_activity_item_margin">0.5dp</dimen>
+    
+    <dimen name="login_activity_txt_size">16sp</dimen>
+    <dimen name="login_activity_margin_left">38dp</dimen>
+    <dimen name="login_activity_margin_right">30dp</dimen>
+    <dimen name="login_activity_edit_height">40dp</dimen>
+    
+    <dimen name="me_activity_photo_zise">70dp</dimen>
+    
 </resources>

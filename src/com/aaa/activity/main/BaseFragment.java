@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 
+import com.aaa.db.AppDetail;
 import com.github.ksoichiro.android.observablescrollview.ObservableGridView;
 import com.llw.AppStore.R;
 
@@ -80,7 +81,8 @@ public abstract class BaseFragment extends Fragment {
         recyclerView.setAdapter(new SimpleRecyclerAdapter(getActivity(), getDummyData()));
     }
 
-    protected void setDummyDataWithHeader(RecyclerView recyclerView, View headerView) {
-        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), getDummyData(), headerView));
+    protected void setDummyDataWithHeader(RecyclerView recyclerView, ArrayList<AppDetail> datas, View headerView) {
+        recyclerView.setAdapter(new MyRecyclerAdapter(getActivity(), datas, headerView));
+//        recyclerView.setAdapter(new MyRecyclerAdapter(getActivity(), getDummyData(), headerView));
     }
 }

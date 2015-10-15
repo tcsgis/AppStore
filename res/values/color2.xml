@@ -3,13 +3,13 @@
 
     <color name="activity_title_back">#4E676C</color>
     <color name="activity_title_txt">#ffffff</color>
-    <color name="activity_back">#DBDCDB</color>
+    <color name="activity_back">#EDEDED</color>
     <color name="btn_unclick">#717070</color>
     <color name="btn_click">#4E676C</color>
     <color name="btn_txt">#ffffff</color>
     <color name="gray_txt">#666666</color>
-    <color name="btn_invalid_color">#706F70</color>
-    <color name="btn_valid_color">#4E676C</color>
+    <color name="btn_invalid_color">#aa4884BA</color>
+    <color name="btn_valid_color">#4884BA</color>
     <color name="divide_line">#959696</color>
     <color name="province_line_border">#C7C7C7</color>
     <color name="custom_order_gray">#4E4C4B</color>
@@ -21,5 +21,23 @@
     <color name="accent">#eeff41</color>
     <color name="accentLight">#F4FF81</color>
 	<color name="material_blue_500">#5677fc</color>
+	
+	<color name="main_item_gray">#9C9C9C</color>
+	<color name="main_item_gray_dark">#616161</color>
+	
+	<color name="progress_bar_back">#474747</color>
+	<color name="progress_bar_fore">#74B000</color>
+	<color name="progress_bar_layout_back">#cc000000</color>
+	<color name="detail_txt_color">#333333</color>
+	
+	<color name="download_activity_back">#F5F5F5</color>
+	<color name="download_activity_txt_green">#6CB000</color>
+	<color name="download_activity_bar_back">#E9E9E9</color>
 
+	<color name="gray_light">#E4E4E4</color>
+	
+	<color name="item_clicked">#EDEDED</color>
+	<color name="item_clicked_light">#ccFFFFFF</color>
+	
+	
 </resources>

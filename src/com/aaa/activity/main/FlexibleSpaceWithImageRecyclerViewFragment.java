@@ -16,6 +16,8 @@
 
 package com.aaa.activity.main;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.aaa.db.AppDetail;
+import com.aaa.util.Constant;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.llw.AppStore.R;
@@ -31,8 +35,18 @@ import com.nineoldandroids.view.ViewHelper;
 
 public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWithImageBaseFragment<ObservableRecyclerView> {
 
+	private int type;
+	private ArrayList<AppDetail> datas;
+	
+	public FlexibleSpaceWithImageRecyclerViewFragment(int type){
+		this.type = type;
+	}
+	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//    	llw todo getData
+    	doGetData();
+    	
         View view = inflater.inflate(R.layout.fragment_flexiblespacewithimagerecyclerview, container, false);
 
         final ObservableRecyclerView recyclerView = (ObservableRecyclerView) view.findViewById(R.id.scroll);
@@ -41,7 +55,7 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
         final View headerView = LayoutInflater.from(getActivity()).inflate(R.layout.recycler_header, null);
         final int flexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         headerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, flexibleSpaceImageHeight));
-        setDummyDataWithHeader(recyclerView, headerView);
+        setDummyDataWithHeader(recyclerView, datas, headerView);
 
         // TouchInterceptionViewGroup should be a parent view other than ViewPager.
         // This is a workaround for the issue #117:
@@ -72,7 +86,7 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
         return view;
     }
 
-    @Override
+	@Override
     public void setScrollY(int scrollY, int threshold) {
         View view = getView();
         if (view == null) {
@@ -112,5 +126,30 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
         if (parentActivity != null) {
             parentActivity.onScrollChanged(scrollY, (ObservableRecyclerView) view.findViewById(R.id.scroll));
         }
+    }
+    
+    private void doGetData() {
+    	//test
+    	datas = new ArrayList<AppDetail>();
+    	if(type == Constant.RE_DIAN){
+    		setDatas("热点");
+    	}
+    	else if(type == Constant.YING_YONG){
+    		setDatas("应用");
+    	}
+    	else if(type == Constant.YOU_XI){
+    		setDatas("游戏");
+    	}
+    	else if(type == Constant.QI_TA){
+    		setDatas("其他");
+    	}
+    }
+    
+    private void setDatas(String name){
+    	for(int i = 1; i < 10; i++){
+			AppDetail a1= new AppDetail();
+			a1.setName(name + i);
+			datas.add(a1);
+		}
     }
 }
