@@ -17,7 +17,6 @@
 package com.aaa.activity.main;
 
 import android.content.res.TypedArray;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;

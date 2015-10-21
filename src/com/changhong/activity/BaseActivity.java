@@ -13,11 +13,17 @@ import com.llw.AppStore.R;
 public class BaseActivity extends CHActivity
 {
 	private Dialog waitDialog;
+	
 	@Override
 	protected void onPreOnCreate(Bundle savedInstanceState)
 	{
 		// TODO Auto-generated method stub
 		super.onPreOnCreate(savedInstanceState);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
 	}
 
 	@Override
@@ -58,5 +64,4 @@ public class BaseActivity extends CHActivity
 		setmDialog(waitDialog, false);
 		waitDialog.show();
 	}
-	
 }

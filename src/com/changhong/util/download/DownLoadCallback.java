@@ -15,6 +15,13 @@
  */
 package com.changhong.util.download;
 
+import java.util.ArrayList;
+
+import com.aaa.db.AppDownloadState;
+import com.aaa.util.MyTools;
+import com.changhong.util.CHLogger;
+import com.changhong.util.db.bean.CacheManager;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -28,44 +35,61 @@ public class DownLoadCallback extends Handler
 	protected static final int FAILURE_MESSAGE = 4;
 	protected static final int FINISH_MESSAGE = 5;
 	protected static final int STOP_MESSAGE = 6;
+	
+	private class LastItem{
+		private String url = null;
+		private long lastTime = 0;
+	}
+	
+	private ArrayList<LastItem> lastItems = new ArrayList<LastItem>();
 
 	public void onStart()
 	{
+		CHLogger.e(this, "onStart");
 	}
 
 	public void onAdd(String url, Boolean isInterrupt)
 	{
+		CHLogger.e(this, "onAdd " + url);
 	}
 
-	public void onLoading(String url, long totalSize, long currentSize,
-			long speed)
+	public void onLoading(String url, long totalSize, long currentSize, long speed)
 	{
-
+		MyTools.refreshLoadingState(url, totalSize, currentSize, speed);
 	}
 
 	public void onSuccess(String url)
 	{
+		CHLogger.e(this, "onSuccess " + url);
+		MyTools.refreshLoadedState(url);
 	}
 
 	public void onFailure(String url, String strMsg)
 	{
-
+		CHLogger.e(this, "onFailure " + url);
+		MyTools.refreshFailureState(url);
 	}
 
 	public void onFinish(String url)
 	{
+		CHLogger.e(this, "onFinish " + url);
 	}
 
 	public void onStop()
 	{
+		CHLogger.e(this, "onStop ");
 	}
 
 	@Override
 	public void handleMessage(Message msg)
 	{
-		// TODO Auto-generated method stub
+		if(! pass(msg)){
+			return;
+		}
+		
 		super.handleMessage(msg);
 		Object[] response;
+		response = (Object[]) msg.obj;
 
 		switch (msg.what)
 		{
@@ -98,6 +122,45 @@ public class DownLoadCallback extends Handler
 			break;
 
 		}
+	}
+
+	private boolean pass(Message msg) {
+		if(msg.what != PROGRESS_MESSAGE){
+			return true;
+		}
+		
+		boolean pass  = false;
+		Object[] response;
+		response = (Object[]) msg.obj;
+		
+		if(response != null && response.length > 0){
+			String url = (String) response[0];
+			boolean hasItem = false;
+			for(LastItem item : lastItems){
+				if(url.equals(item.url)){
+					if(System.currentTimeMillis() - item.lastTime > 1500){
+						item.lastTime = System.currentTimeMillis();
+						pass = true;
+					}else{
+						pass = false;
+					}
+					hasItem = true;
+					break;
+				}
+			}
+			
+			if(! hasItem){
+				LastItem item = new LastItem();
+				item.lastTime = System.currentTimeMillis();
+				item.url = url;
+				lastItems.add(item);
+				pass = true;
+			}
+		}else{
+			pass = true;
+		}
+		
+		return pass;
 	}
 
 	protected void sendSuccessMessage(String url)

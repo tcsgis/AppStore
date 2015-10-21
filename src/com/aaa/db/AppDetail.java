@@ -13,16 +13,18 @@ public class AppDetail  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@CHPrimaryKey
 	private int ID;
-	private String Name;
-	private String LogoUrl;
-	private byte Type;
-	private float Size;//保留小数点后一位
-	private String Desc;
-	private String PackageName;
-	private String Developer;
+	private String Name;//资源名字
+	private String LogoUrl;//logo
+	private String Tag;//分类
+	private int Order;//排列的顺序;
+	private byte Type;//apk（分为游戏、应用====）、网页、书籍，====
+	private float Size;//保留小数点后一位，单位M
+	private String Desc;//详细描述
+	private String PackageName;//apk的包名
+	private String Developer;//开发者
 	private String Version;
-	private String DownloadUrl;
-	private ArrayList<String> DescUrl;
+	private String DownloadUrl;//下载地址、或者网页链接
+	private ArrayList<String> DescUrl;//描述图片，最多5张，最少3张
 	
 	public void setID(int i){
 		ID = i;
@@ -32,12 +34,28 @@ public class AppDetail  implements Serializable{
 		return ID;
 	}
 	
+	public void setOrder(int i){
+		Order = i;
+	}
+	
+	public int getOrder(){
+		return Order;
+	}
+	
 	public void setName(String i){
 		Name = i;
 	}
 	
 	public String getName(){
 		return Name;
+	}
+	
+	public void setTag(String i){
+		Tag = i;
+	}
+	
+	public String getTag(){
+		return Tag;
 	}
 	
 	public void setDesc(String i){

@@ -1,5 +1,6 @@
 package com.aaa.activity.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -7,10 +8,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.aaa.db.AppUser;
 import com.aaa.util.Constant;
+import com.aaa.util.MyTools;
 import com.changhong.activity.BaseActivity;
 import com.changhong.annotation.CHInjectView;
+import com.changhong.util.CHLogger;
+import com.changhong.util.db.bean.CacheManager;
 import com.llw.AppStore.R;
 
 public class LoginActivity extends BaseActivity {
@@ -24,10 +30,13 @@ public class LoginActivity extends BaseActivity {
 	
 	private MyHandler handler = new MyHandler();
 	private int time = 0;
+	private String phone_num;
+	private Bundle bundle;
 
 	@Override
 	protected void onAfterOnCreate(Bundle savedInstanceState) {
 		super.onAfterOnCreate(savedInstanceState);
+		bundle = getIntent().getExtras();
 		initView();
 	}
 
@@ -44,7 +53,15 @@ public class LoginActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-
+				if(MyTools.validPhone(phone)){
+					if(validYanzhengma()){
+						doVerity();
+					}else{
+						Toast.makeText(LoginActivity.this, R.string.login_string8, Toast.LENGTH_SHORT).show();
+					}
+				}else{
+					Toast.makeText(LoginActivity.this, R.string.login_string9, Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		
@@ -52,13 +69,46 @@ public class LoginActivity extends BaseActivity {
 			
 			@Override
 			public void onClick(View v) {
-				doGetVerify();
+				if(MyTools.validPhone(phone)){
+					phone_num = MyTools.getText(phone);
+					doGetVerify();
+				}else{
+					Toast.makeText(LoginActivity.this, R.string.login_string9, Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 	}
 	
 	private void doGetVerify(){
 		handler.sendEmptyMessage(100);
+	}
+	
+	private void doVerity() {
+		doLogin();
+	}
+	
+	private void doLogin() {
+		test();
+		if(bundle != null){
+			Intent data = new Intent();
+			data.putExtras(bundle);
+			setResult(Constant.RESULT_LOGIN_SUCCEED, data);
+		}
+		finish();
+	}
+	
+	private boolean validYanzhengma(){
+		if(MyTools.getText(yanzhengma).length() != 6){
+			return false;
+		}
+		return true;
+	}
+	
+	private void test(){
+		AppUser user = new AppUser();
+		user.setID(1);
+		user.setName(MyTools.getText(phone));
+		CacheManager.INSTANCE.setCurrentUser(user);
 	}
 	
 	private class MyHandler extends Handler{

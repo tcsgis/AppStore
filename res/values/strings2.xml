@@ -6,7 +6,12 @@
     <string name="continue_txt">继续</string>
     <string name="pause">暂停</string>
     <string name="install">安裝</string>
+    <string name="dialog_title">提示</string>
+    <string name="open_app">打开</string>
 
+    <!-- MainActivity -->
+    <string name="ma_string1">下载中</string>
+    
     <!-- DetailActivity -->
     <string name="da_string1">应用介绍</string>
     <string name="da_string2">%1$sM</string>
@@ -25,6 +30,9 @@ Q版造型的可爱人物，浓郁古典风的精美场景，优化更新的经�
 告别单机，白手起家富甲天下。互动乐趣经典游戏不可错过，神作再临，摆摊交易沟通梦幻与现实；\n
 —再续征程，不可错过\n
 从零开始，和你一起再续经典。技能特效、风格造型精彩绚丽、美轮美奂，西游手游巅峰之作升级你的西游征程。</string>
+	<string name="da_string5">继续</string>
+	<string name="da_string6">暂停</string>
+	<string name="da_string7">安装</string>
 
      <!-- DownloadActivity -->
     <string name="doA_string1">下载管理</string>
@@ -37,6 +45,8 @@ Q版造型的可爱人物，浓郁古典风的精美场景，优化更新的经�
     <string name="doA_string8">详情</string>
     <string name="doA_string9">暂无下载\n快去看看有什么好玩的吧</string>
     <string name="doA_string10">%1$dK/S</string>
+    <string name="doA_string11">确定取消下载？</string>
+    <string name="doA_string12">确定删除文件？</string>
     
     <!-- MeActivity -->
     <string name="me_string1">个人中心</string>
@@ -50,5 +60,11 @@ Q版造型的可爱人物，浓郁古典风的精美场景，优化更新的经�
     <string name="login_string4">获得验证码</string>
     <string name="login_string5">登         录</string>
     <string name="login_string6">%1$ds后重新获取</string>
+    <string name="login_string7">请先登陆</string>
+    <string name="login_string8">请输入验证码</string>
+    <string name="login_string9">请输入手机号</string>
+    
+    <!-- Toast -->
+    <string name="toast1">下载失败，请重新下载</string>
     
 </resources>

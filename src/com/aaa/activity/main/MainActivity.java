@@ -29,11 +29,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
-
 import com.aaa.activity.download.DownloadActivity;
 import com.aaa.activity.me.MeActivity;
-import com.aaa.activity.search.SearchActivity;
+import com.aaa.db.AppDownloadState;
 import com.aaa.util.Constant;
+import com.aaa.util.MyTools;
 import com.github.ksoichiro.android.observablescrollview.CacheFragmentStatePagerAdapter;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
@@ -64,20 +64,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flexiblespacewithimagewithviewpagertab);
+        initView();
+    }
 
-        mPagerAdapter = new NavigationAdapter(getSupportFragmentManager());
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    	try {
+			Fragment f = mPagerAdapter.getItemAt(mPager.getCurrentItem());
+			if(FlexibleSpaceWithImageRecyclerViewFragment.class.isInstance(f)){
+				((FlexibleSpaceWithImageRecyclerViewFragment)f).refresh();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    private void initView() {
+    	mPagerAdapter = new NavigationAdapter(getSupportFragmentManager());
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
-        mFlexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
-//        mFlexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
-        mTabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
-        titleHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
         
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primary_txt));
         mSlidingTabLayout.setDistributeEvenly(true);
         mSlidingTabLayout.setViewPager(mPager);
+        
+        mFlexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
+//        mFlexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
+        mTabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
+        titleHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
+        
 
         imageView = findViewById(R.id.image);
         overlayView = findViewById(R.id.overlay);
@@ -123,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 //		});
     }
 
-    /**
+	/**
      * Called by children Fragments when their scrollY are changed.
      * They all call this method even when they are inactive
      * but this Activity should listen only the active child,
@@ -241,8 +259,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private static class NavigationAdapter extends CacheFragmentStatePagerAdapter {
 
-        private static final String[] TITLES = new String[]{"热点", "游戏", "应用", "其他"
-        	/*, "Eclair", "Froyo", "Gingerbread", "Honeycomb", "Ice Cream Sandwich", "Jelly Bean", "KitKat", "Lollipop"*/};
+        private static final String[] TITLES = Constant.MAIN_VIEW_SLIDE_TITLES;
 
         private int mScrollY;
 
@@ -288,5 +305,23 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return TITLES[position];
         }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if(requestCode == Constant.REQUEST_LOGIN && resultCode == Constant.RESULT_LOGIN_SUCCEED){
+    		AppDownloadState ads = (AppDownloadState) data.getExtras().getSerializable(Constant.APP_DOWNLOAD_STATE);
+    		if(ads != null){
+    			MyTools.startDownload(ads);
+    			try {
+    				Fragment f = mPagerAdapter.getItemAt(mPager.getCurrentItem());
+    				if(FlexibleSpaceWithImageRecyclerViewFragment.class.isInstance(f)){
+    					((FlexibleSpaceWithImageRecyclerViewFragment)f).refresh();
+    				}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+    		}
+    	}
     }
 }

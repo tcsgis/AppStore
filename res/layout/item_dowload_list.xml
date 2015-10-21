@@ -107,6 +107,7 @@
                         <ImageView
                             android:id="@+id/state_img"
                             android:layout_width="26dp"
+                            android:layout_gravity="center_horizontal"
                             android:layout_height="26dp"
                             android:src="@drawable/download" />
 
@@ -114,10 +115,11 @@
                             android:id="@+id/state_txt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
                             android:layout_marginTop="5dp"
-                            android:text="下载"
                             android:textColor="@color/main_item_gray"
                             android:textSize="12sp" />
+
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>

@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.aaa.util.Constant;
 import com.changhong.common.CHStringUtils;
 import com.changhong.util.CHLogger;
 import com.changhong.util.http.AsyncHttpClient;
@@ -42,7 +43,7 @@ public class DownloadManager extends Thread
 	private Boolean isRunning = false;
 	private static final String SDCARD_ROOT = Environment
 			.getExternalStorageDirectory().getAbsolutePath() + "/";
-	public static final String FILE_ROOT = SDCARD_ROOT + "thinkandroid/";
+	public static final String FILE_ROOT = SDCARD_ROOT + Constant.SAVE_PATH_DIR_NAME + "/";
 	private DownLoadCallback mDownLoadCallback;
 	private String rootPath = "";
 	private static DownloadManager downloadManager;
@@ -452,6 +453,10 @@ public class DownloadManager extends Thread
 		}
 	}
 
+	public String getSavePath(String url){
+		return getRootPath() + CHStringUtils.getFileNameFromUrl(url);
+	}
+	
 	private AsyncHttpResponseHandler newAsyncHttpResponseHandler(String url)
 			throws MalformedURLException
 	{

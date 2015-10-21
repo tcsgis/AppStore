@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -15,15 +17,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.aaa.activity.download.DownloadListAdapter;
 import com.aaa.activity.download.HeightChangeListener;
 import com.aaa.activity.login.LoginActivity;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
 import com.aaa.util.Constant;
-import com.aaa.util.DMUtil;
 import com.aaa.util.MyTools;
 import com.aaa.util.PhotoType;
 import com.changhong.activity.BaseActivity;
@@ -32,12 +31,12 @@ import com.changhong.activity.widget.PhotoSelectPopupView;
 import com.changhong.annotation.CHInjectView;
 import com.changhong.util.bitmap.CHBitmapCacheWork;
 import com.changhong.util.db.bean.CacheManager;
+import com.changhong.util.download.DownLoadCallback;
+import com.changhong.util.download.DownloadManager;
 import com.llw.AppStore.R;
 
 public class MeActivity extends BaseActivity{
 
-	@CHInjectView(id = R.id.downloaded_ll)
-	private LinearLayout downloaded_ll;
 	@CHInjectView(id = R.id.downloaded_list)
 	private ListView downloaded_list;
 	@CHInjectView(id = R.id.btn_downloaded)
@@ -50,11 +49,22 @@ public class MeActivity extends BaseActivity{
 	private ImageView photo;
 	
 	private ArrayList<AppDownloadState> downloded = new ArrayList<AppDownloadState>();
-	private DownloadListAdapter adapter;
+	private DownloadListAdapter downloadedAdapter;
 	private PhotoSelectPopupView mPopupAltView;
 	private Uri mPhotoUri;
 	private String newPhotoPath;
 	private CHBitmapCacheWork imgFetcher;
+	private MyHandler handler;
+	
+	private class MyHandler extends Handler{
+		@Override
+		public void handleMessage(Message msg) {
+			if(msg.what == Constant.DONWLOADED_CLEAR){
+				downloaded_list.setVisibility(View.GONE);
+				null_txt.setVisibility(View.VISIBLE);
+			}
+		}
+	}
 	
 	@Override
 	protected void onAfterOnCreate(Bundle savedInstanceState) {
@@ -73,14 +83,19 @@ public class MeActivity extends BaseActivity{
 			}
 		});
 		
-		login.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(MeActivity.this, LoginActivity.class);
-				startActivity(i);
-			}
-		});
+		if(CacheManager.INSTANCE.getCurrentUser() != null){
+			login.setText(CacheManager.INSTANCE.getCurrentUser().getName());
+		}else{
+			login.setText(R.string.me_string2);
+			login.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(MeActivity.this, LoginActivity.class);
+					startActivity(i);
+				}
+			});
+		}
 		
 		photo.setOnClickListener(new OnClickListener() {
 			
@@ -108,34 +123,55 @@ public class MeActivity extends BaseActivity{
 	protected void onStart() {
 		super.onStart();
 		if(CacheManager.INSTANCE.getCurrentUser() == null || CacheManager.INSTANCE.getCurrentUser().getID() == 0){
+		}else{
 			login.setText(R.string.me_string2);
 			Drawable d = getResources().getDrawable(R.drawable.right_white);
 			login.setCompoundDrawables(null, null, null, d);
-		}else{
 			login.setText(CacheManager.INSTANCE.getCurrentUser().getName());
 		}
+		
+		DownloadManager.getDownloadManager().setDownLoadCallback(new DownLoadCallback()
+		{
+			@Override
+ 			public void onSuccess(String url) {
+ 				super.onSuccess(url);
+ 				downloaded_list.setVisibility(View.VISIBLE);
+ 				downloadedAdapter.refresh();
+ 			}
+		});
+		//for install apk
+		downloadedAdapter.refresh();
 	}
 
 	private void doGetData() {
-		test();
+		downloded.clear();
+		
+		for(AppDownloadState item : CacheManager.INSTANCE.getDownload()){
+			if(item.getDownloadState() == DownloadState.DOWNLOADED || 
+					item.getDownloadState() == (DownloadState.DOWNLOADED | DownloadState.INSTALLED)){
+				downloded.add(item.clone());
+			}
+		}
 	}
 
 	private void initList() {
 		if(downloded.size() == 0){
 			downloaded_list.setVisibility(View.GONE);
 			null_txt.setVisibility(View.VISIBLE);
-			return;
 		}
 		
+		//downloaded
+		btn_downloaded.setVisibility(View.GONE);
 		btn_downloaded.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MeActivity.this, "click", Toast.LENGTH_SHORT).show();
+				
 			}
 		});
 		
-		adapter = new DownloadListAdapter(this, downloded, Constant.TYPE_HISTORY_LIST, new HeightChangeListener() {
+		handler = new MyHandler();
+		downloadedAdapter = new DownloadListAdapter(this, downloded, handler, Constant.TYPE_DOWNLADED_LIST, new HeightChangeListener() {
 			
 			@Override
 			public void onHeightChanged(int height) {
@@ -144,7 +180,33 @@ public class MeActivity extends BaseActivity{
 				downloaded_list.setLayoutParams(lp);
 			}
 		});
-		downloaded_list.setAdapter(adapter);
+		downloaded_list.setAdapter(downloadedAdapter);
+		
+		
+//		if(downloded.size() == 0){
+//			downloaded_list.setVisibility(View.GONE);
+//			null_txt.setVisibility(View.VISIBLE);
+//			return;
+//		}
+//		
+//		btn_downloaded.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				Toast.makeText(MeActivity.this, "click", Toast.LENGTH_SHORT).show();
+//			}
+//		});
+//		
+//		downloadedAdapter = new DownloadListAdapter(this, downloded, new MyHandler(), Constant.TYPE_HISTORY_LIST, new HeightChangeListener() {
+//			
+//			@Override
+//			public void onHeightChanged(int height) {
+//				LayoutParams lp = downloaded_list.getLayoutParams();
+//				lp.height = height;
+//				downloaded_list.setLayoutParams(lp);
+//			}
+//		});
+//		downloaded_list.setAdapter(downloadedAdapter);
 	}
 	
 	@Override
@@ -173,35 +235,11 @@ public class MeActivity extends BaseActivity{
 											photo.getWidth(), 
 											photo.getHeight()));
 						}
-						
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void test() {
-		AppDownloadState a1 = new AppDownloadState();
-		a1.setName("请问请问颇大是大");
-		a1.setProgress(2.5f);
-		a1.setSize(15.2f);
-		a1.setDownloadState(DownloadState.PAUSE);
-		downloded.add(a1);
-		
-		AppDownloadState a2 = new AppDownloadState();
-		a2.setName("在常州常州");
-		a2.setProgress(0.5f);
-		a2.setSize(45.2f);
-		a2.setDownloadState(DownloadState.DOWNLOADING);
-		downloded.add(a2);
-		
-		AppDownloadState a3 = new AppDownloadState();
-		a3.setName("看；老凯；看；");
-		a3.setProgress(5.5f);
-		a3.setSize(9.2f);
-		a3.setDownloadState(DownloadState.DOWNLOADED);
-		downloded.add(a3);
 	}
 }

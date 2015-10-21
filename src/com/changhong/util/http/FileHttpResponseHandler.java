@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import org.apache.http.HttpResponse;
 import org.apache.http.conn.ConnectTimeoutException;
 
+import com.aaa.util.Constant;
 import com.changhong.exception.FileAlreadyExistException;
 import com.changhong.util.CHLogger;
 import android.os.Message;
@@ -23,7 +24,7 @@ public class FileHttpResponseHandler extends AsyncHttpResponseHandler
 	private final static int BUFFER_SIZE = 1024 * 8;
 
 	private static final String TAG = "FileHttpResponseHandler";
-	private static final String TEMP_SUFFIX = ".download";
+	private static final String TEMP_SUFFIX = Constant.TEMP_SUFFIX;
 	private File file;
 	private File tempFile;
 	private File baseDirFile;

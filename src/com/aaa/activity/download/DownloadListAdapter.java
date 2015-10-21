@@ -6,9 +6,12 @@ import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
 import com.aaa.util.Constant;
 import com.aaa.util.MyTools;
+import com.changhong.activity.widget.AppMainDialog;
+import com.changhong.util.db.bean.CacheManager;
 import com.llw.AppStore.R;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,10 +34,14 @@ public class DownloadListAdapter extends BaseAdapter{
 	private int marginHeight;
 	private boolean needOperation;
 	private boolean needProgress;
+	private Handler parentHandler;
+	private int listType;
 	
-	public DownloadListAdapter(Context c, ArrayList<AppDownloadState> list, int listType, HeightChangeListener l){
+	public DownloadListAdapter(Context c, ArrayList<AppDownloadState> list, Handler handler, int listType, HeightChangeListener l){
 		context = c;
 		listener = l;
+		parentHandler = handler;
+		this.listType = listType;
 		topHeight = context.getResources().getDimensionPixelSize(R.dimen.download_activity_item_height1);
 		bottomHeight = context.getResources().getDimensionPixelSize(R.dimen.download_activity_item_height2);
 		marginHeight = context.getResources().getDimensionPixelSize(R.dimen.download_activity_item_margin);
@@ -107,6 +114,76 @@ public class DownloadListAdapter extends BaseAdapter{
 	public long getItemId(int position) {
 		return 0;
 	}
+	
+	public void refresh(){
+		if(listType == Constant.TYPE_DOWNLADING_LIST){
+			datas.clear();
+			
+			for(AppDownloadState item : CacheManager.INSTANCE.getDownload()){
+				if(item.getDownloadState() == DownloadState.DOWNLOADING || item.getDownloadState() == DownloadState.PAUSE){
+					datas.add(new MyItem(item.clone()));
+				}
+			}
+//			for(int i = 0; i < datas.size(); i++){
+//				boolean hasItem = false;
+//				for(AppDownloadState item : CacheManager.INSTANCE.getDownload()){
+//					if(item.getID() == datas.get(i).data.getID()
+//							&& (item.getDownloadState() == DownloadState.DOWNLOADING || item.getDownloadState() == DownloadState.PAUSE)){
+//						datas.get(i).data = item.clone();
+//						hasItem = true;
+//						break;
+//					}
+//				}
+//				if(! hasItem){
+//					datas.remove(i);
+//					i--;
+//				}
+//			}
+		}
+		
+		if(listType == Constant.TYPE_DOWNLADED_LIST){
+			datas.clear();
+			
+			for(AppDownloadState item : CacheManager.INSTANCE.getDownload()){
+				if(item.getDownloadState() == DownloadState.DOWNLOADED || 
+						item.getDownloadState() == (DownloadState.DOWNLOADED | DownloadState.INSTALLED)){
+					datas.add(new MyItem(item.clone()));
+				}
+			}
+//			for(int i = 0; i < CacheManager.INSTANCE.getDownload().size(); i++){
+//				if(CacheManager.INSTANCE.getDownload().get(i).getDownloadState() == DownloadState.DOWNLOADED
+//						|| CacheManager.INSTANCE.getDownload().get(i).getDownloadState() == (DownloadState.INSTALLED | DownloadState.DOWNLOADED)){
+//					boolean hasItem = false;
+//					for(MyItem item : datas){
+//						if(item.data.getID() == CacheManager.INSTANCE.getDownload().get(i).getID()){
+//							item.data = CacheManager.INSTANCE.getDownload().get(i).clone();
+//							hasItem = true;
+//							break;
+//						}
+//					}
+//					if(! hasItem){
+//						MyItem mi = new MyItem(CacheManager.INSTANCE.getDownload().get(i).clone());
+//						datas.add(mi);
+//					}
+//				}
+//			}
+		}
+		
+		if(datas.size() == 0 && parentHandler != null){
+			if(listType == Constant.TYPE_DOWNLADED_LIST){
+				parentHandler.sendEmptyMessage(Constant.DONWLOADED_CLEAR);
+			}
+			else if(listType == Constant.TYPE_DOWNLADING_LIST){
+				parentHandler.sendEmptyMessage(Constant.DONWLOADING_CLEAR);
+			}
+			else if(listType == Constant.TYPE_HISTORY_LIST){
+				parentHandler.sendEmptyMessage(Constant.HISTORY_CLEAR);
+			}
+		}
+		
+		refreshHeight();
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -149,8 +226,8 @@ public class DownloadListAdapter extends BaseAdapter{
 					
 					@Override
 					public void onClick(View v) {
-						//start download
-						Toast.makeText(context, "dontinue", Toast.LENGTH_SHORT).show();
+						MyTools.continueDownload(item.data);
+						refresh();
 					}
 				});
 			}else if(item.data.getDownloadState() == DownloadState.DOWNLOADING){
@@ -160,8 +237,8 @@ public class DownloadListAdapter extends BaseAdapter{
 					
 					@Override
 					public void onClick(View v) {
-						//pause download
-						Toast.makeText(context, "paused", Toast.LENGTH_SHORT).show();
+						MyTools.pauseDownload(item.data);
+						refresh();
 					}
 				});
 			}else if(item.data.getDownloadState() == DownloadState.DOWNLOADED){
@@ -171,8 +248,17 @@ public class DownloadListAdapter extends BaseAdapter{
 					
 					@Override
 					public void onClick(View v) {
-						//pause download
-						Toast.makeText(context, "install", Toast.LENGTH_SHORT).show();
+						MyTools.installApk(context, item.data);
+					}
+				});
+			}else if(item.data.getDownloadState() >= DownloadState.INSTALLED){
+				vh.state_img.setImageResource(R.drawable.open);
+				vh.state_txt.setText(R.string.open_app);
+				vh.operation.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						MyTools.openAnotherApp(context, item.data);
 					}
 				});
 			}
@@ -188,19 +274,20 @@ public class DownloadListAdapter extends BaseAdapter{
 				vh.progress.setVisibility(View.VISIBLE);
 				vh.speed.setVisibility(View.VISIBLE);
 				vh.progressBar.setVisibility(View.VISIBLE);
-				vh.progress.setText(MyTools.float2String(item.data.getProgress()) + "M/" + MyTools.float2String(item.data.getSize()) + "M");
+				vh.progress.setText(MyTools.float2String(item.data.getProgress() / 1024 / 1024f) + "M/" + MyTools.float2String(item.data.getSize()) + "M");
 				vh.speed.setText(context.getString(R.string.doA_string5));
-				vh.progressBar.setProgress((int)(item.data.getProgress() / item.data.getSize()));
+				vh.progressBar.setProgress((int)(item.data.getPercent()));
 			}
 			else if(item.data.getDownloadState() == DownloadState.DOWNLOADING){
 				vh.progress.setVisibility(View.VISIBLE);
 				vh.speed.setVisibility(View.VISIBLE);
 				vh.progressBar.setVisibility(View.VISIBLE);
-				vh.progress.setText(MyTools.float2String(item.data.getProgress()) + "M/" + MyTools.float2String(item.data.getSize()) + "M");
-				vh.speed.setText(context.getString(R.string.doA_string5));
-				vh.progressBar.setProgress((int)(item.data.getProgress() / item.data.getSize()));
+				vh.progress.setText(MyTools.float2String(item.data.getProgress() / 1024 / 1024f) + "M/" + MyTools.float2String(item.data.getSize()) + "M");
+				vh.speed.setText(MyTools.float2String(item.data.getSpeed()) + "K/s");
+				vh.progressBar.setProgress((int)(item.data.getPercent()));
 			}
-			else if(item.data.getDownloadState() == DownloadState.DOWNLOADED){
+			else /*if(item.data.getDownloadState() == DownloadState.DOWNLOADED || item.data.getDownloadState() == DownloadState.INSTALLED
+					|| item.data.getDownloadState() == (DownloadState.DOWNLOADED | DownloadState.INSTALLED))*/{
 				vh.progress.setVisibility(View.GONE);
 				vh.speed.setVisibility(View.GONE);
 				vh.progressBar.setVisibility(View.GONE);
@@ -226,14 +313,27 @@ public class DownloadListAdapter extends BaseAdapter{
 		}
 		
 		//left rl
-		if(! needProgress || item.data.getDownloadState() == DownloadState.DOWNLOADED){
+		if(! needProgress || item.data.getDownloadState() == DownloadState.DOWNLOADED 
+				|| item.data.getDownloadState() == (DownloadState.DOWNLOADED | DownloadState.INSTALLED)){
 			vh.delete_img.setImageResource(R.drawable.delete);
 			vh.delete_txt.setText(R.string.delete);
 			vh.delete_rl.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show();
+					final AppMainDialog dialog = new AppMainDialog(context, R.style.appdialog);
+					dialog.withTitle(R.string.dialog_title)
+					.withMessage(R.string.doA_string12)
+					.setOKClick(R.string.ok_queren, new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View view) {
+							MyTools.removeDownloadedFile(item.data);
+							refresh();
+							dialog.dismiss();
+						}
+					})
+					.setCancelClick(R.string.cancel_quxiao).show();
 				}
 			});
 		}else{
@@ -243,7 +343,19 @@ public class DownloadListAdapter extends BaseAdapter{
 				
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
+					final AppMainDialog dialog = new AppMainDialog(context, R.style.appdialog);
+					dialog.withTitle(R.string.dialog_title)
+					.withMessage(R.string.doA_string11)
+					.setOKClick(R.string.ok_queren, new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View view) {
+							MyTools.cancelDownload(item.data);
+							refresh();
+							dialog.dismiss();
+						}
+					})
+					.setCancelClick(R.string.cancel_quxiao).show();
 				}
 			});
 		}
