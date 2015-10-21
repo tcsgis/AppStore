@@ -1,9 +1,15 @@
 package com.aaa.activity.detail;
 
+import java.util.ArrayList;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -13,9 +19,13 @@ import android.widget.TextView;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
 import com.aaa.util.Constant;
+import com.aaa.util.DMUtil;
 import com.aaa.util.MyTools;
 import com.changhong.activity.BaseActivity;
+import com.changhong.activity.widget.HorizontalListView;
+import com.changhong.activity.widget.PhotoSelectPopupView;
 import com.changhong.annotation.CHInjectView;
+import com.changhong.util.bitmap.CHBitmapCacheWork;
 import com.changhong.util.db.bean.CacheManager;
 import com.changhong.util.download.DownLoadCallback;
 import com.changhong.util.download.DownloadManager;
@@ -51,10 +61,15 @@ public class DetailActivity extends BaseActivity {
 	private FrameLayout operation_bottom;
 	@CHInjectView(id = R.id.progressBar)
 	private ProgressBar progressBar;
+	@CHInjectView(id = R.id.list)
+	private HorizontalListView list;
 	
 	public static final String DATA = "DetailActivity.DATA";
 	
 	private AppDownloadState data;
+	private PhotoSelectPopupView mPopupAltView;
+	private PhotoAdapter adapter;
+	private CHBitmapCacheWork imageFetcher;
 	
 	@Override
 	protected void onAfterOnCreate(Bundle savedInstanceState) {
@@ -63,6 +78,8 @@ public class DetailActivity extends BaseActivity {
 		if(data == null){
 			finish();
 		}else{
+			imageFetcher = MyTools.getImageFetcher(this, getCHApplication(), false, 0, 
+					DMUtil.getFacePhotoWidth(this), DMUtil.getFacePhotoHeight(this));
 			initView();
 		}
 	}
@@ -124,6 +141,11 @@ public class DetailActivity extends BaseActivity {
 				finish();
 			}
 		});
+		
+		if(data.getDescUrl() != null && data.getDescUrl().size() > 0){
+			adapter = new PhotoAdapter(data.getDescUrl(), this);
+			list.setAdapter(adapter);
+		}
 	}
 	
 	private OnClickListener operationClickListener = new OnClickListener() {
@@ -230,4 +252,55 @@ public class DetailActivity extends BaseActivity {
 			 }
 		 }
 	 }
+	 
+	 private class PhotoAdapter extends BaseAdapter{
+
+			private ArrayList<String> list;
+			private Context context;
+			
+			public PhotoAdapter(ArrayList<String> list, Context context) {
+				this.list = list;
+				this.context = context;
+			}
+			
+			@Override
+			public int getCount() {
+				return list.size();
+			}
+
+			@Override
+			public Object getItem(int position) {
+				return list.get(position);
+			}
+
+			@Override
+			public long getItemId(int position) {
+				return 0;
+			}
+
+			@Override
+			public View getView(final int position, View convertView, ViewGroup parent) {
+				ViewHolder viewHolder = null;
+				final String url = list.get(position);
+				if (convertView == null) {
+					viewHolder = new ViewHolder();
+					convertView = LayoutInflater.from(context).inflate(R.layout.item_photo_show_list, null);
+					viewHolder.photo = (ImageView) convertView.findViewById(R.id.photo);
+					convertView.setTag(viewHolder);
+				} else {
+					viewHolder = (ViewHolder) convertView.getTag();
+				}
+					
+				try {
+					imageFetcher.loadFormCache(url, viewHolder.photo);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return convertView;
+			}
+			
+			final class ViewHolder{
+				public ImageView photo;
+			}
+		}
 }

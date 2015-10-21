@@ -6,7 +6,6 @@ import com.aaa.activity.detail.DetailActivity;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
 import com.aaa.util.MyTools;
-import com.changhong.util.CHLogger;
 import com.changhong.util.db.bean.CacheManager;
 import com.llw.AppStore.R;
 

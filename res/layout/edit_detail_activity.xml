@@ -28,7 +28,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="108dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/main_item_padding"
@@ -60,76 +60,81 @@
                                 android:layout_weight="1"
                                 android:orientation="vertical" >
 
-                                <TextView
+                                <EditText
                                     android:id="@+id/name"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:background="@color/white"
+                                    android:hint="名字"
                                     android:singleLine="true"
                                     android:textColor="@color/detail_txt_color"
-                                    android:textSize="20sp" />
+                                    android:textSize="12sp" />
 
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:orientation="horizontal" >
 
-                                    <TextView
-                                        android:id="@+id/version"
-                                        android:layout_width="60dp"
-                                        android:visibility="gone"
-                                        android:layout_height="wrap_content"
-                                        android:textColor="@color/main_item_gray"
-                                        android:textSize="12sp" />
-
-                                    <TextView
+                                    <EditText
                                         android:id="@+id/size"
                                         android:layout_width="60dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:background="@color/white"
+                                        android:hint="文件大小"
                                         android:textColor="@color/main_item_gray"
                                         android:textSize="12sp" />
-                                </LinearLayout>
+                                    <EditText
+                                        android:id="@+id/version"
+                                        android:layout_marginTop="4dp"
+                                        android:layout_width="60dp"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/white"
+                                        android:hint="版本号"
+                                        android:textColor="@color/main_item_gray"
+                                        android:textSize="12sp" />
 
-                                <TextView
+                                <EditText
                                     android:id="@+id/developer"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
+                                    android:background="@color/white"
                                     android:ellipsize="end"
+                                    android:hint="开发者/来源"
                                     android:paddingRight="15dp"
                                     android:singleLine="true"
                                     android:textColor="@color/main_item_gray_dark"
                                     android:textSize="12sp" />
-                            </LinearLayout>
-
-                            <RelativeLayout
-                                android:id="@+id/operation"
-                                android:layout_width="60dp"
-                                android:layout_height="match_parent" >
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
+                                <EditText
+                                    android:id="@+id/download_url"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:orientation="vertical" >
-
-                                    <ImageView
-                                        android:id="@+id/state_img"
-                                        android:layout_width="38dp"
-                                        android:layout_height="38dp"
-                                        android:src="@drawable/download" />
-
-                                    <TextView
+                                    android:layout_marginTop="4dp"
+                                    android:background="@color/white"
+                                    android:ellipsize="end"
+                                    android:hint="下载地址"
+                                    android:paddingRight="15dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/main_item_gray_dark"
+                                    android:textSize="12sp" />
+                                
+                                 <EditText
                                         android:id="@+id/state_txt"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
-                                        android:gravity="center"
-                                        android:text="下载"
+                                        android:background="@color/white"
+                                        android:hint="排序"
                                         android:textColor="@color/main_item_gray"
                                         android:textSize="11sp" />
-                                </LinearLayout>
-                            </RelativeLayout>
+                                 
+                                  <EditText
+                                        android:id="@+id/package_name"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:background="@color/white"
+                                        android:hint="apk包名"
+                                        android:textColor="@color/main_item_gray"
+                                        android:textSize="11sp" />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -162,16 +167,16 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="@string/da_string1"
                             android:textColor="@color/detail_txt_color"
                             android:textSize="18sp" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="21312"
                             android:layout_gravity="center_vertical"
+                            android:background="@color/white"
+                            android:hint="应用类型,2~4个字"
                             android:textColor="@color/gray_txt"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -181,10 +186,12 @@
                         android:layout_height="1dp"
                         android:background="@color/activity_back" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:hint="描述"
                         android:lineSpacingExtra="4dp"
                         android:paddingBottom="8dp"
                         android:paddingTop="10dp"
@@ -228,13 +235,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:text="上传"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
             </FrameLayout>
 
             <RelativeLayout
+                android:id="@+id/delete"
                 android:layout_width="76dp"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                 >
+                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="删除"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
             </RelativeLayout>
         </LinearLayout>
     </FrameLayout>

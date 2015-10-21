@@ -82,6 +82,10 @@
             android:name="com.aaa.activity.search.SearchActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.aaa.activity.admin.EditDetailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <receiver android:name="com.aaa.receiver.BootReceiver"  
                   android:label="@string/app_name">   

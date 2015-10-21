@@ -5,10 +5,10 @@ import android.util.DisplayMetrics;
 
 public class DMUtil {
 	
-	//发廊、发型师照片
-	private static final int FACE_PHOTO_W = 360;//都是dp
-	private static final int FACE_PHOTO_H = 190;
-	//顾客发布竞价图片
+	//详情页图片
+	private static final int FACE_PHOTO_W = 110;//都是dp
+	private static final int FACE_PHOTO_H = 182;
+	//logo
 	private static final int BID_PHOTO_W = 230;
 	private static final int BID_PHOTO_H = 320;
 	//证书、作品、健康证照片

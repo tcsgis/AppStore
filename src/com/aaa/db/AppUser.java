@@ -15,6 +15,7 @@ public class AppUser implements Serializable{
 	private String Name;
 	private ArrayList<AppDetail> DownloadHistory;//下载、浏览历史
 	private String Photo;//头像
+	private byte Role;
 	
 	public void setID(int i){
 		ID = i;
@@ -38,6 +39,14 @@ public class AppUser implements Serializable{
 	
 	public String getPhoto(){
 		return Photo;
+	}
+	
+	public void setRole(byte i){
+		Role = i;
+	}
+	
+	public byte getRole(){
+		return Role;
 	}
 	
 	public void setDownloadHistory(ArrayList<AppDetail> i){

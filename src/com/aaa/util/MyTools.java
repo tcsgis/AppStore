@@ -1,18 +1,14 @@
 package com.aaa.util;
 
 import java.io.File;
-import java.io.ObjectOutputStream.PutField;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import com.aaa.activity.login.LoginActivity;
-import com.aaa.activity.main.MyRecyclerAdapter;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
 import com.changhong.CHApplication;
-import com.changhong.common.CHStringUtils;
-import com.changhong.util.CHLogger;
 import com.changhong.util.bitmap.CHBitmapCacheWork;
 import com.changhong.util.bitmap.CHBitmapCallBackHanlder;
 import com.changhong.util.bitmap.CHDownloadBitmapHandler;
@@ -20,21 +16,14 @@ import com.changhong.util.db.bean.CacheManager;
 import com.changhong.util.download.DownloadManager;
 import com.llw.AppStore.R;
 
-import android.R.integer;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.method.MovementMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;

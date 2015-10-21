@@ -220,6 +220,11 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
     }
     
     private void test(int type){
+    	ArrayList<String> urls = new ArrayList<String>();
+    	urls.add("1");
+    	urls.add("2");
+    	urls.add("3");
+    	urls.add("4");
     	for(int i = 1; i <= url.length; i++){
     		AppDetail a1= new AppDetail();
     		a1.setTag(Constant.MAIN_VIEW_SLIDE_TITLES[type]);
@@ -228,6 +233,7 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
 			a1.setDownloadUrl(url[(i - 1) % url.length]);
 			a1.setSize(10.8f);
 			a1.setPackageName(pn[i - 1]);
+			a1.setDescUrl(urls);
 			rawDatas.add(a1);
 		}
     }
