@@ -29,11 +29,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
+import android.widget.ImageView;
+
+import com.aaa.activity.admin.EditDetailActivity;
 import com.aaa.activity.download.DownloadActivity;
 import com.aaa.activity.me.MeActivity;
 import com.aaa.db.AppDownloadState;
+import com.aaa.util.AppType;
 import com.aaa.util.Constant;
 import com.aaa.util.MyTools;
+import com.aaa.util.Role;
+import com.changhong.util.db.bean.CacheManager;
 import com.github.ksoichiro.android.observablescrollview.CacheFragmentStatePagerAdapter;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private  View imageView;
     private View overlayView;
     private EditText titleView;
+    private ImageView rightImg;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
     	super.onStart();
     	try {
+    		initRoleStateView();
 			Fragment f = mPagerAdapter.getItemAt(mPager.getCurrentItem());
 			if(FlexibleSpaceWithImageRecyclerViewFragment.class.isInstance(f)){
 				((FlexibleSpaceWithImageRecyclerViewFragment)f).refresh();
@@ -81,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void initView() {
+    	rightImg = (ImageView) findViewById(R.id.download_manage);
+    	
     	mPagerAdapter = new NavigationAdapter(getSupportFragmentManager());
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
@@ -113,21 +123,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
-        findViewById(R.id.download_manage).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
-				startActivity(intent);
-			}
-		});
-        
         findViewById(R.id.me).setOnClickListener(new OnClickListener() {
         	
         	@Override
         	public void onClick(View v) {
         		Intent intent = new Intent(MainActivity.this, MeActivity.class);
-				startActivity(intent);
+        		startActivity(intent);
         	}
         });
         
@@ -139,6 +140,29 @@ public class MainActivity extends AppCompatActivity {
 //				startActivity(intent);
 //			}
 //		});
+    }
+    
+    private void initRoleStateView(){
+    	if(CacheManager.INSTANCE.getCurrentUser() != null && CacheManager.INSTANCE.getCurrentUser().getRole() == Role.ADMIN){
+    		rightImg.setImageResource(R.drawable.add);
+    		rightImg.setOnClickListener(new OnClickListener() {
+    			
+    			@Override
+    			public void onClick(View v) {
+    				Intent intent = new Intent(MainActivity.this, EditDetailActivity.class);
+    				startActivity(intent);
+    			}
+    		});
+    	}else{
+    		rightImg.setOnClickListener(new OnClickListener() {
+    			
+    			@Override
+    			public void onClick(View v) {
+    				Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
+    				startActivity(intent);
+    			}
+    		});
+    	}
     }
 
 	/**
@@ -312,15 +336,20 @@ public class MainActivity extends AppCompatActivity {
     	if(requestCode == Constant.REQUEST_LOGIN && resultCode == Constant.RESULT_LOGIN_SUCCEED){
     		AppDownloadState ads = (AppDownloadState) data.getExtras().getSerializable(Constant.APP_DOWNLOAD_STATE);
     		if(ads != null){
-    			MyTools.startDownload(ads);
-    			try {
-    				Fragment f = mPagerAdapter.getItemAt(mPager.getCurrentItem());
-    				if(FlexibleSpaceWithImageRecyclerViewFragment.class.isInstance(f)){
-    					((FlexibleSpaceWithImageRecyclerViewFragment)f).refresh();
+    			if(ads.getType() == AppType.APP || ads.getType() == AppType.GAME){
+    				MyTools.startDownload(ads);
+    				try {
+    					Fragment f = mPagerAdapter.getItemAt(mPager.getCurrentItem());
+    					if(FlexibleSpaceWithImageRecyclerViewFragment.class.isInstance(f)){
+    						((FlexibleSpaceWithImageRecyclerViewFragment)f).refresh();
+    					}
+    				} catch (Exception e) {
+    					e.printStackTrace();
     				}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+    			}
+    			else if(ads.getType() == AppType.WEB){
+    				MyTools.openWeb(MainActivity.this, ads.getDownloadUrl());
+    			}
     		}
     	}
     }

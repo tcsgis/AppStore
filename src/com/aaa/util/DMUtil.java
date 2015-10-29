@@ -6,14 +6,14 @@ import android.util.DisplayMetrics;
 public class DMUtil {
 	
 	//详情页图片
-	private static final int FACE_PHOTO_W = 110;//都是dp
-	private static final int FACE_PHOTO_H = 182;
+	private static final int FACE_PHOTO_W = 200;//都是dp
+	private static final int FACE_PHOTO_H = 200;
 	//logo
-	private static final int BID_PHOTO_W = 230;
-	private static final int BID_PHOTO_H = 320;
+	private static final int BID_PHOTO_W = 200;
+	private static final int BID_PHOTO_H = 200;
 	//证书、作品、健康证照片
-	private static final int ELSE_PHOTO_W = 100;
-	private static final int ELSE_PHOTO_H = 120;
+	private static final int ELSE_PHOTO_W = 110;
+	private static final int ELSE_PHOTO_H = 182;
 	//广告照片
 	private static final int AD_PHOTO_W = 360;
 	private static final int AD_PHOTO_H = 120;

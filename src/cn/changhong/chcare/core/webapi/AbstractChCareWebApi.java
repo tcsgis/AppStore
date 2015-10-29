@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +20,23 @@ import cn.changhong.chcare.core.webapi.util.MultipartUtility;
 import cn.changhong.chcare.core.webapi.util.TokenManager;
 import cn.changhong.chcare.core.webapi.util.WebApiExecutorProvider;
 
+import com.aaa.db.AppDetail;
+import com.aaa.db.AppUser;
+import com.aaa.util.MyTools;
+import com.aaa.util.Role;
 import com.changhong.BuildConfig;
 import com.changhong.util.CHLogger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public abstract class AbstractChCareWebApi {
 	protected final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	protected final static String charset = "utf-8";
-	public static String BASE_URL = "http://182.92.165.152:9081/api/";
+	public static String BASE_URL = "http://182.92.115.78:9181/api/";
 	public void setServerUrl(URL url){
 		BASE_URL=url.toString();
 	}
@@ -204,12 +213,17 @@ public abstract class AbstractChCareWebApi {
 			throws HttpRequestException {
 		return this.httpRequestHandler.getPhotoFile(url);
 	}
+	
 	public boolean downloadFile(String url,OutputStream out) throws HttpRequestException{
 		String downurl = BASE_URL;
 		try
 		{
-			downurl = new StringBuilder(BASE_URL).append("File/?id=").append(url).
-					append("&key=").append(TokenManager.getFiletoken()).toString();
+			if(TokenManager.getFiletoken() != null){
+				downurl = new StringBuilder(BASE_URL).append("File/?id=").append(url).
+						append("&key=").append(TokenManager.getFiletoken()).toString();
+			}else{
+				downurl = new StringBuilder(BASE_URL).append("File/?id=").append(url).toString();
+			}
 //			if(url.contains("?"))
 //				url = (new StringBuilder(String.valueOf(url))).append("&key=").append(TokenManager.getFiletoken()).toString();
 		}
@@ -219,6 +233,7 @@ public abstract class AbstractChCareWebApi {
 		CHLogger.d(this, "downurl " + downurl );
 		return this.httpRequestHandler.getPhotoFile(downurl, out);
 	}
+	
 	protected String doPostSingleFileUsedFormType(String url,
 			InputStream instream, Map<String, String> formBodys, String filename)
 			throws HttpRequestException {
@@ -252,5 +267,62 @@ public abstract class AbstractChCareWebApi {
 			return response.substring(0, 1000) + "...(too long data)";
 		else
 			return response;
+	}
+	
+	protected AppUser transToAppUser(JsonObject userJs){
+		try {
+			AppUser app = new AppUser();
+			app.setID(userJs.get("Id") == null ? 0 :userJs.get("Id").getAsInt());
+			app.setName(userJs.get("Name") == null ? null : userJs.get("Name").getAsString());
+			app.setRole(userJs.get("Role") == null ? Role.UNDIFINED : userJs.get("Role").getAsByte());
+			app.setPhoto(userJs.get("Photo") == null ? null : userJs.get("Photo").getAsString());
+			return app;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	protected ArrayList<AppDetail> transToAppDetailList(String response){
+		ArrayList<AppDetail> apps = new ArrayList<AppDetail>();
+		JsonParser parser = new JsonParser();
+		JsonElement jsonEl = parser.parse(response);
+		JsonArray array = jsonEl.getAsJsonObject().getAsJsonArray("Data");
+		
+		for(JsonElement je : array){
+			AppDetail app = new AppDetail();
+			app = transToAppDetail(je.getAsJsonObject());
+			if(app != null){
+				apps.add(app);
+			}
+		}
+		return apps;
+	}
+	
+	private AppDetail transToAppDetail(JsonObject userJs) {
+		try {
+			AppDetail app = new AppDetail();
+			app.setID(userJs.get("Id") == null ? 0 :userJs.get("Id").getAsInt());
+			app.setName(userJs.get("Name") == null ? null : userJs.get("Name").getAsString());
+			app.setLogoUrl(userJs.get("LogoUrl") == null ? null : userJs.get("LogoUrl").getAsString());
+			app.setTag(userJs.get("Tag") == null ? null : userJs.get("Tag").getAsString());
+			app.setOrder(userJs.get("Order") == null ? 0 : userJs.get("Order").getAsInt());
+			app.setType(userJs.get("Type") == null ? 0 : userJs.get("Type").getAsByte());
+			app.setSize(userJs.get("Size") == null ? 0 : userJs.get("Size").getAsFloat());
+			app.setDesc(userJs.get("Desc") == null ? null : userJs.get("Desc").getAsString());
+			app.setPackageName(userJs.get("PackageName") == null ? null : userJs.get("PackageName").getAsString());
+			app.setDeveloper(userJs.get("Developer") == null ? null : userJs.get("Developer").getAsString());
+			app.setVersion(userJs.get("Version") == null ? null : userJs.get("Version").getAsString());
+			app.setDownloadUrl(userJs.get("DownloadUrl") == null ? null : userJs.get("DownloadUrl").getAsString());
+			app.setDescUrl(MyTools.splitPhoto(userJs.get("DescUrl")));
+			app.setOwner(userJs.get("Owner") == null ? 0 : userJs.get("Owner").getAsInt());
+			app.setDownCount(userJs.get("DownCount") == null ? 0 : userJs.get("DownCount").getAsInt());
+			app.setUploadTime(userJs.get("Upload") == null ? null : userJs.get("Upload").getAsString());
+			
+			return app;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

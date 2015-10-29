@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.AppUser;
 import com.aaa.db.DownloadState;
+import com.aaa.util.Constant;
 
 /**  
  * 
@@ -40,8 +41,8 @@ public class CacheManager {
 
 	public synchronized void clearAllData() {
 		currentUser = null;
-		appDatas.clear();
-		download.clear();
+//		appDatas.clear();
+//		download.clear();
 	}
 	
 	public synchronized void addDownload(AppDownloadState ads){
@@ -73,6 +74,21 @@ public class CacheManager {
 					item.setPercent(data.getPercent());
 					item.setSavePath(data.getSavePath());
 					item.setSpeed(data.getSpeed());
+					item.setName(data.getName());
+					item.setLogoUrl(data.getLogoUrl());
+					item.setTag(data.getTag());
+					item.setOrder(data.getOrder());
+					item.setType(data.getType());
+					item.setSize(data.getSize());
+					item.setDesc(data.getDesc());
+					item.setPackageName(data.getPackageName());
+					item.setDeveloper(data.getDeveloper());
+					item.setVersion(data.getVersion());
+					item.setDownloadUrl(data.getDownloadUrl());
+					item.setDescUrl(data.getDescUrl());
+					item.setOwner(data.getOwner());
+					item.setDownCount(data.getDownCount());
+					item.setUploadTime(data.getUploadTime());
 					contain = true;
 					break;
 				}
@@ -89,7 +105,11 @@ public class CacheManager {
 	}
 	
 	public synchronized ArrayList<AppDownloadState> getAppData(String key){
-		return appDatas.get(key);
+		if(appDatas.containsKey(key)){
+			return appDatas.get(key);
+		}else{
+			return new ArrayList<AppDownloadState>();
+		}
 	}
 	
 	public synchronized Map<String, ArrayList<AppDownloadState>> getAllAppData(){

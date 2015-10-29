@@ -62,7 +62,7 @@
 
                                 <EditText
                                     android:id="@+id/name"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@color/white"
                                     android:hint="名字"
@@ -70,25 +70,23 @@
                                     android:textColor="@color/detail_txt_color"
                                     android:textSize="12sp" />
 
+                                <EditText
+                                    android:id="@+id/size"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:background="@color/white"
+                                    android:hint="文件大小,单位M,保留一位小数"
+                                    android:textSize="12sp" />
 
-                                    <EditText
-                                        android:id="@+id/size"
-                                        android:layout_width="60dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="4dp"
-                                        android:background="@color/white"
-                                        android:hint="文件大小"
-                                        android:textColor="@color/main_item_gray"
-                                        android:textSize="12sp" />
-                                    <EditText
-                                        android:id="@+id/version"
-                                        android:layout_marginTop="4dp"
-                                        android:layout_width="60dp"
-                                        android:layout_height="wrap_content"
-                                        android:background="@color/white"
-                                        android:hint="版本号"
-                                        android:textColor="@color/main_item_gray"
-                                        android:textSize="12sp" />
+                                <EditText
+                                    android:id="@+id/version"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:background="@color/white"
+                                    android:hint="app版本号/书籍版本=="
+                                    android:textSize="12sp" />
 
                                 <EditText
                                     android:id="@+id/developer"
@@ -100,8 +98,8 @@
                                     android:hint="开发者/来源"
                                     android:paddingRight="15dp"
                                     android:singleLine="true"
-                                    android:textColor="@color/main_item_gray_dark"
                                     android:textSize="12sp" />
+
                                 <EditText
                                     android:id="@+id/download_url"
                                     android:layout_width="match_parent"
@@ -109,31 +107,43 @@
                                     android:layout_marginTop="4dp"
                                     android:background="@color/white"
                                     android:ellipsize="end"
-                                    android:hint="下载地址"
+                                    android:hint="下载地址/链接网址"
                                     android:paddingRight="15dp"
                                     android:singleLine="true"
-                                    android:textColor="@color/main_item_gray_dark"
                                     android:textSize="12sp" />
-                                
-                                 <EditText
-                                        android:id="@+id/state_txt"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@color/white"
-                                        android:hint="排序"
-                                        android:textColor="@color/main_item_gray"
-                                        android:textSize="11sp" />
-                                 
-                                  <EditText
-                                        android:id="@+id/package_name"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="5dp"
-                                        android:background="@color/white"
-                                        android:hint="apk包名"
-                                        android:textColor="@color/main_item_gray"
-                                        android:textSize="11sp" />
+
+                                <EditText
+                                    android:id="@+id/type"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:background="@color/white"
+                                    android:ellipsize="end"
+                                    android:hint="0游戏,1应用，2网页"
+                                    android:inputType="number"
+                                    android:maxLength="1"
+                                    android:paddingRight="15dp"
+                                    android:singleLine="true"
+                                    android:textSize="12sp" />
+
+                                <EditText
+                                    android:id="@+id/order"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:background="@color/white"
+                                    android:hint="在列表中的顺序，可以不填"
+                                    android:inputType="number"
+                                    android:textSize="11sp" />
+
+                                <EditText
+                                    android:id="@+id/package_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:background="@color/white"
+                                    android:hint="apk包名,如果是apk则必填"
+                                    android:textSize="11sp" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
@@ -142,7 +152,7 @@
                 <com.changhong.activity.widget.HorizontalListView
                     android:id="@+id/list"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/detail_img_height"
+                    android:layout_height="220dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="@dimen/main_item_padding"
                     android:layout_marginRight="@dimen/main_item_padding"
@@ -171,12 +181,14 @@
                             android:textSize="18sp" />
 
                         <EditText
-                            android:id="@+id/type"
+                            android:id="@+id/tag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:background="@color/white"
+                            android:gravity="right"
                             android:hint="应用类型,2~4个字"
+                            android:maxLength="4"
                             android:textColor="@color/gray_txt"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -243,9 +255,9 @@
             <RelativeLayout
                 android:id="@+id/delete"
                 android:layout_width="76dp"
-                android:layout_height="match_parent"
-                 >
-                 <TextView
+                android:layout_height="match_parent" >
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"

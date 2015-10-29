@@ -4,6 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
+import cn.changhong.chcare.core.webapi.bean.ResponseBean;
+import cn.changhong.chcare.core.webapi.handler.AsyncResponseCompletedHandler;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider;
+import cn.changhong.chcare.core.webapi.server.ChCareWepApiServiceType;
+import cn.changhong.chcare.core.webapi.server.IASAccountService;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider.WebApiServerType;
+import cn.changhong.chcare.core.webapi.util.TokenManager;
+
 import com.changhong.activity.BaseActivity;
 
 import android.content.Intent;
@@ -14,17 +22,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.aaa.activity.main.MainActivity;
 import com.aaa.db.AppDownloadState;
+import com.aaa.db.AppUser;
 import com.aaa.db.DownloadState;
 import com.aaa.util.Constant;
+import com.aaa.util.MyTools;
+import com.changhong.util.CHLogger;
 import com.changhong.util.config.CHIConfig;
 import com.changhong.util.db.bean.CacheManager;
 import com.changhong.util.download.DownloadManager;
 
 public class WelcomeActivity extends BaseActivity{
 
-//	private ISalonAccountService accountService = (ISalonAccountService) CHCareWebApiProvider.Self
-//			.defaultInstance().getDefaultWebApiService(
-//					WebApiServerType.SALON_ACCOUNT_SERVER);
+	private Handler handler = new Handler( );
+	private IASAccountService accountService = (IASAccountService) CHCareWebApiProvider.Self
+			.defaultInstance().getDefaultWebApiService(
+					WebApiServerType.AS_ACCOUNT_SERVER);
 	
 	@Override
 	protected void onAfterOnCreate(Bundle savedInstanceState) {
@@ -39,14 +51,17 @@ public class WelcomeActivity extends BaseActivity{
 		
 		CHIConfig config = this.getCHApplication().getPreferenceConfig();
 		String phone = config.getString(Constant.USERNAME, "");
+		//获取本地保存的token
+		MyTools.setToken(WelcomeActivity.this);
+		
 		
 		if(phone.length() == 11){
 			toLogin(phone);
 		}else{
-			toMainActivity();
+			toMainActivityDelay(Constant.WELCOME_SHOW_TIME);
 		}
 	}
-	
+
 	private void doGetLocalDatas() {
 		File saveDir = new File(DownloadManager.getDownloadManager().getRootPath());
 		try {
@@ -105,49 +120,49 @@ public class WelcomeActivity extends BaseActivity{
 	}
 
 	private void doLogin(String phone) {
-//		accountService.login(phone, mima, new AsyncResponseCompletedHandler<String>() {
-//			
-//			@Override
-//			public String doCompleted(ResponseBean<?> response,
-//					ChCareWepApiServiceType servieType) {
-//				if(response.getState() >= 0){
-//					SalonUser user = (SalonUser) response.getData();
-//					CacheManager.INSTANCE.setCurrentUser(user);
-//				}
-//				
-//				Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-//				startActivity(intent);
-//				return null;
-//			}
-//		});
+		final long startTime = System.currentTimeMillis();
+		accountService.login(phone, null, new AsyncResponseCompletedHandler<String>() {
+			
+			@Override
+			public String doCompleted(ResponseBean<?> response, ChCareWepApiServiceType servieType) {
+				if(response.getState() >= 0){
+					AppUser user = (AppUser) response.getData();
+					CacheManager.INSTANCE.setCurrentUser(user);
+					MyTools.saveToken(WelcomeActivity.this);
+				}
+				
+				long l = System.currentTimeMillis() - startTime;
+				if(l < Constant.WELCOME_SHOW_TIME){
+					toMainActivityDelay(Constant.WELCOME_SHOW_TIME - l);
+				}else{
+					toMainActivity();
+				}
+				return null;
+			}
+		});
 	}
 	
-	private Handler handler = new Handler( );
-	
-	private void toLogin(final String phone){
+	protected void toMainActivityDelay(long l) {
 		Runnable runnable = new Runnable()
 		{
 			public void run()
 			{
-				doLogin(phone);
+				toMainActivity();
 			}
 		};
 		
-		handler.postDelayed(runnable, 1000);
+		handler.postDelayed(runnable, l);
+	}
+
+	
+	private void toLogin(final String phone){
+		doLogin(phone);
 	}
 	
 	private void toMainActivity(){
-		Runnable runnable = new Runnable()
-		{
-			public void run()
-			{
-				Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-				startActivity(intent);
-				finish();
-			}
-		};
-		
-		handler.postDelayed(runnable, 2000);
+		Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+		startActivity(intent);
+		finish();
 	}
 }
 

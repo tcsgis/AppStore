@@ -32,6 +32,20 @@
             android:text="@string/me_string1"
             android:textColor="@color/white"
             android:textSize="@dimen/txt_large_size" />
+
+        <RelativeLayout
+            android:id="@+id/rl_right"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/me_string4"
+                android:textColor="@color/white" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout

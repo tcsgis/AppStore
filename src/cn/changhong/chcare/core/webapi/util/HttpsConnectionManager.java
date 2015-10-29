@@ -14,6 +14,8 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import com.changhong.util.CHLogger;
+
 import cn.changhong.chcare.core.webapi.bean.CHCareFileInStream;
 import cn.changhong.chcare.core.webapi.server.ChCareWebApiRequestErrorType;
 

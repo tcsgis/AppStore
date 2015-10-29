@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import cn.changhong.chcare.core.webapi.ASAccountApi;
+import cn.changhong.chcare.core.webapi.AdminApi;
 import cn.changhong.chcare.core.webapi.ChCareAppManagerApi;
+import cn.changhong.chcare.core.webapi.ChCareWebApiAccountnApi;
 import cn.changhong.chcare.core.webapi.ChCareWebApiOfflineMessageApi;
+import cn.changhong.chcare.core.webapi.FileApi;
 
 public class CHCareWebApiProvider {
 
@@ -33,7 +37,13 @@ public class CHCareWebApiProvider {
 		defaultServiceMap.put(WebApiServerType.CHCARE_CHCAREAPPMANAGERAPI_SERVER,
 				ChCareAppManagerApi.class);
 		defaultServiceMap.put(WebApiServerType.CHCARE_ACCOUNT_SERVER,
-				IAccountService.class);
+				ChCareWebApiAccountnApi.class);
+		defaultServiceMap.put(WebApiServerType.AS_ACCOUNT_SERVER,
+				ASAccountApi.class);
+		defaultServiceMap.put(WebApiServerType.FILE_SERVER,
+				FileApi.class);
+		defaultServiceMap.put(WebApiServerType.ADMIN_SERVER,
+				AdminApi.class);
 	}
 
 	public static CHCareWebApiProvider newInstance() {
@@ -43,6 +53,9 @@ public class CHCareWebApiProvider {
 	public static enum WebApiServerType {
 		 CHCARE_OFFLINEMESSAGE_SERVER("offlinemessageservice"), 
 		 CHCARE_ACCOUNT_SERVER("CHAccountService"), 
+		 AS_ACCOUNT_SERVER("AS_ACCOUNT_SERVER"), 
+		 FILE_SERVER("FILE_SERVER"), 
+		 ADMIN_SERVER("ADMIN_SERVER"), 
 		 CHCARE_CHCAREAPPMANAGERAPI_SERVER("appmanagerserver");
 		private String value;
 

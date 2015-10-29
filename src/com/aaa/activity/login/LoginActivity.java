@@ -9,13 +9,20 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import cn.changhong.chcare.core.webapi.bean.ResponseBean;
+import cn.changhong.chcare.core.webapi.handler.AsyncResponseCompletedHandler;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider.WebApiServerType;
+import cn.changhong.chcare.core.webapi.server.ChCareWepApiServiceType;
+import cn.changhong.chcare.core.webapi.server.IASAccountService;
 
 import com.aaa.db.AppUser;
 import com.aaa.util.Constant;
 import com.aaa.util.MyTools;
+import com.aaa.util.Role;
 import com.changhong.activity.BaseActivity;
 import com.changhong.annotation.CHInjectView;
-import com.changhong.util.CHLogger;
+import com.changhong.util.config.CHIConfig;
 import com.changhong.util.db.bean.CacheManager;
 import com.llw.AppStore.R;
 
@@ -32,6 +39,11 @@ public class LoginActivity extends BaseActivity {
 	private int time = 0;
 	private String phone_num;
 	private Bundle bundle;
+	private boolean getVerify = false;
+	
+	private IASAccountService accountService = (IASAccountService) CHCareWebApiProvider.Self
+			.defaultInstance().getDefaultWebApiService(
+					WebApiServerType.AS_ACCOUNT_SERVER);
 
 	@Override
 	protected void onAfterOnCreate(Bundle savedInstanceState) {
@@ -55,7 +67,7 @@ public class LoginActivity extends BaseActivity {
 			public void onClick(View v) {
 				if(MyTools.validPhone(phone)){
 					if(validYanzhengma()){
-						doVerity();
+						doVerify();
 					}else{
 						Toast.makeText(LoginActivity.this, R.string.login_string8, Toast.LENGTH_SHORT).show();
 					}
@@ -80,21 +92,75 @@ public class LoginActivity extends BaseActivity {
 	}
 	
 	private void doGetVerify(){
-		handler.sendEmptyMessage(100);
+		getVerify = false;
+		accountService.getVetifyCode(phone_num, 2, Role.UNDIFINED, 
+				new AsyncResponseCompletedHandler<String>() {
+
+			@Override
+			public String doCompleted(ResponseBean<?> response, ChCareWepApiServiceType servieType) {
+				if(response.getState() == 0){
+					handler.sendEmptyMessage(100);
+					getVerify = true;
+					hideAllDialog();
+					Toast.makeText(LoginActivity.this, R.string.login_string10, Toast.LENGTH_SHORT).show();
+				}else{
+					doResponseInfo(response);
+				}
+				return null;
+			}
+		});
 	}
 	
-	private void doVerity() {
-		doLogin();
+	private void doVerify() {
+		accountService.verifyCode(phone_num, yanzhengma.getEditableText().toString(), 2,
+				new AsyncResponseCompletedHandler<String>(){
+
+					@Override
+					public String doCompleted(ResponseBean<?> response,
+							ChCareWepApiServiceType servieType) {
+						if(response.getState() == 0){
+							doLogin();
+						}else{
+							doResponseInfo(response);
+						}
+						return null;
+					}
+			
+		});
 	}
 	
 	private void doLogin() {
-		test();
-		if(bundle != null){
-			Intent data = new Intent();
-			data.putExtras(bundle);
-			setResult(Constant.RESULT_LOGIN_SUCCEED, data);
-		}
-		finish();
+		showWaitDialog();
+		accountService.login(phone_num, yanzhengma.getEditableText().toString(), 
+				new AsyncResponseCompletedHandler<String>() {
+			
+			@Override
+			public String doCompleted(ResponseBean<?> response,
+					ChCareWepApiServiceType servieType) {
+				if(response.getState() >= 0){
+					hideAllDialog();
+					AppUser user = (AppUser) response.getData();
+					CacheManager.INSTANCE.setCurrentUser(user);
+					MyTools.saveToken(LoginActivity.this);
+					
+					CHIConfig config = LoginActivity.this.getCHApplication().getPreferenceConfig();
+					if(phone_num != null){
+						config.setString(Constant.USERNAME, phone_num);
+					}
+					
+					if(bundle != null){
+						Intent data = new Intent();
+						data.putExtras(bundle);
+						setResult(Constant.RESULT_LOGIN_SUCCEED, data);
+					}
+					
+					finish();
+				}else{
+					doResponseInfo(response);
+				}
+				return null;
+			}
+		});
 	}
 	
 	private boolean validYanzhengma(){
@@ -102,6 +168,33 @@ public class LoginActivity extends BaseActivity {
 			return false;
 		}
 		return true;
+	}
+	
+	private void doResponseInfo(ResponseBean<?> reBean){
+		
+		if(reBean.getState() == 0){
+			
+		}else{
+			doVerfiyCodeErr(reBean.getState());
+		}
+		
+		hideAllDialog();
+	}
+	
+	private void doVerfiyCodeErr(int err) {
+		if(err == -16){
+			showToast(R.string.err_verfiycode_timeout);
+		}else if(err == -17){
+			showToast(R.string.err_phone_isused);
+		}else if(err == -3){
+			showToast(R.string.err_forget_phone);
+		}else if(err == -8){
+			showToast(R.string.err_verfiycode);
+		}else if(err == -4){
+			showToast(R.string.login_string24);
+		}else if(err == -18){
+			showToast(R.string.login_string25);
+		}
 	}
 	
 	private void test(){

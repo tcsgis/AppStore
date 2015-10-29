@@ -46,7 +46,6 @@
         <activity
             android:name="com.aaa.activity.main.WelcomeActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Toolbar" >
             <intent-filter>
@@ -84,6 +83,14 @@
         </activity>
         <activity
             android:name="com.aaa.activity.admin.EditDetailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+         <activity
+            android:name="com.changhong.activity.photo.upload.ImgFileListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.changhong.activity.crop.CropImageActivity"
             android:screenOrientation="portrait" >
         </activity>
 

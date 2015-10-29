@@ -5,15 +5,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import cn.changhong.chcare.core.webapi.util.TokenManager;
+
 import com.aaa.activity.login.LoginActivity;
+import com.aaa.db.AppDetail;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
+import com.changhong.CHActivity;
 import com.changhong.CHApplication;
 import com.changhong.util.bitmap.CHBitmapCacheWork;
 import com.changhong.util.bitmap.CHBitmapCallBackHanlder;
 import com.changhong.util.bitmap.CHDownloadBitmapHandler;
+import com.changhong.util.config.CHIConfig;
 import com.changhong.util.db.bean.CacheManager;
 import com.changhong.util.download.DownloadManager;
+import com.google.gson.JsonElement;
 import com.llw.AppStore.R;
 
 import android.app.Activity;
@@ -32,6 +38,8 @@ import android.widget.Toast;
 public class MyTools {
 	
 	private final static String TAG = "MyTools";
+	private static final String PHOTO_DIVIDER = "\\|";
+	private static final String PHOTO_SPLIT = "|";
 	
 	public static String float2String(float value) {
 		String s = String.valueOf(value);
@@ -351,12 +359,16 @@ public class MyTools {
 		
 		Collection<ArrayList<AppDownloadState>> values = CacheManager.INSTANCE.getAllAppData().values();
 		for(ArrayList<AppDownloadState> list : values){
+			boolean find = false;
 			for(int i = 0; i < list.size(); i++){
 				if(packageName.equals(list.get(i).getPackageName())){
 					list.get(i).setDownloadState(newState);
+					find = true;
 					break;
 				}
 			}
+			if(find)
+				break;
 		}
 		
 		AppDownloadState item;
@@ -412,12 +424,16 @@ public class MyTools {
 			
 			Collection<ArrayList<AppDownloadState>> values = CacheManager.INSTANCE.getAllAppData().values();
 			for(ArrayList<AppDownloadState> list : values){
+				boolean find = false;
 				for(int i = 0; i < list.size(); i++){
 					if(data.getID() == list.get(i).getID()){
 						list.get(i).setDownloadState(newState);
+						find = true;
 						break;
 					}
 				}
+				if(find)
+					break;
 			}
 			
 			AppDownloadState item;
@@ -428,6 +444,111 @@ public class MyTools {
 					break;
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void removeAppDetail(AppDetail app){
+		AppDownloadState data = new AppDownloadState(app);
+		for(AppDownloadState item : CacheManager.INSTANCE.getAppData(data.getTag())){
+			if(item.getID() == data.getID()){
+				CacheManager.INSTANCE.getAppData(data.getTag()).remove(item);
+				break;
+			}
+		}
+	}
+	
+	public static ArrayList<String> splitPhoto(JsonElement je){
+		ArrayList<String> photos = new ArrayList<String>();
+		if(je != null){
+			String[] ss = je.getAsString().split(PHOTO_DIVIDER);
+			for(int i = 0; i < ss.length; i++){
+				photos.add(ss[i]);
+			}
+		}
+		return photos;
+	}
+	
+	public static ArrayList<String> splitPhoto(String s){
+		ArrayList<String> photos = new ArrayList<String>();
+		if(s != null){
+			String[] ss = s.split(PHOTO_DIVIDER);
+			for(int i = 0; i < ss.length; i++){
+				photos.add(ss[i]);
+			}
+		}
+		return photos;
+	}
+	
+	public static String composePhotos(ArrayList<String> photos){
+		String s = "";
+		if(photos != null){
+			for(int i = 0; i < photos.size(); i++){
+				if(i == 0){
+					s += photos.get(i);
+				}else{
+					s += PHOTO_SPLIT + photos.get(i);
+				}
+			}
+		}
+		return s;
+	}
+
+	public static void setToken(CHActivity c) {
+		CHIConfig config = c.getCHApplication().getPreferenceConfig();
+		String token = config.getString(Constant.TOKEN, "");
+		String fileToken = config.getString(Constant.FILE_TOKEN, "");
+		TokenManager.setToken(token);
+		TokenManager.setFiletoken(fileToken);
+	}
+	
+	public static void saveToken(CHActivity c){
+		CHIConfig config = c.getCHApplication().getPreferenceConfig();
+		config.setString(Constant.TOKEN, TokenManager.getToken());
+		config.setString(Constant.FILE_TOKEN, TokenManager.getFiletoken());
+	}
+	
+	public static void clearToken(CHActivity c){
+		CHIConfig config = c.getCHApplication().getPreferenceConfig();
+		config.setString(Constant.TOKEN, "");
+		config.setString(Constant.FILE_TOKEN, "");
+	}
+	
+	public static boolean editNotNull(EditText edit){
+		if(edit.getText() != null && edit.getText().toString() != null
+				&& ! edit.getText().toString().trim().equals("")){
+			return true;
+		}
+		return false;
+	}
+
+	public static AppDetail toAppDetail(AppDownloadState data) {
+		AppDetail app = new AppDetail();
+		app.setID(data.getID());
+		app.setName(data.getName());
+		app.setLogoUrl(data.getLogoUrl());
+		app.setTag(data.getRealTag());
+		app.setOrder(data.getOrder());
+		app.setType(data.getType());
+		app.setSize(data.getSize());
+		app.setDesc(data.getDesc());
+		app.setPackageName(data.getPackageName());
+		app.setDeveloper(data.getDeveloper());
+		app.setVersion(data.getVersion());
+		app.setDownloadUrl(data.getDownloadUrl());
+		app.setDescUrl(data.getDescUrl());
+		app.setOwner(data.getOwner());
+		app.setDownCount(data.getDownCount());
+		app.setUploadTime(data.getUploadTime());
+		return app;
+	}
+
+	public static void openWeb(Activity c, String downloadUrl) {
+		try {
+			final Uri uri = Uri.parse(downloadUrl);          
+			final Intent it = new Intent(Intent.ACTION_VIEW, uri);          
+			c.startActivity(it);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

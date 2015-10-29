@@ -121,7 +121,7 @@ public abstract class AsyncResponseCompletedHandler<T> extends Handler{
 				break;
 			}
 			}
-			this.sendEmptyMessage(toastId);
+//			this.sendEmptyMessage(toastId);
 		}
 
 		if(getLoctionData){

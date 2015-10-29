@@ -1,5 +1,6 @@
 package com.aaa.db;
 
+import com.aaa.util.Constant;
 import com.changhong.util.CHLogger;
 import com.changhong.util.download.DownloadManager;
 
@@ -75,6 +76,14 @@ public class AppDownloadState extends AppDetail implements Cloneable{
 	
 	public float getPercent() {
 		return Percent;
+	}
+	
+	public String getTag(){
+		return Constant.MAIN_VIEW_SLIDE_TITLES[Constant.RE_DIAN];
+	}
+	
+	public String getRealTag(){
+		return super.getTag();
 	}
 	
 	public AppDownloadState clone() {

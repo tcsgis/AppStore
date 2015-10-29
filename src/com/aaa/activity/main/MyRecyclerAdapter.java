@@ -2,10 +2,25 @@ package com.aaa.activity.main;
 
 import java.util.ArrayList;
 
+import cn.changhong.chcare.core.webapi.bean.ResponseBean;
+import cn.changhong.chcare.core.webapi.handler.AsyncResponseCompletedHandler;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider;
+import cn.changhong.chcare.core.webapi.server.ChCareWepApiServiceType;
+import cn.changhong.chcare.core.webapi.server.IASAccountService;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider.WebApiServerType;
+
+import com.aaa.activity.admin.EditDetailActivity;
 import com.aaa.activity.detail.DetailActivity;
 import com.aaa.db.AppDownloadState;
 import com.aaa.db.DownloadState;
+import com.aaa.util.AppType;
+import com.aaa.util.Constant;
+import com.aaa.util.DMUtil;
 import com.aaa.util.MyTools;
+import com.aaa.util.Role;
+import com.changhong.CHApplication;
+import com.changhong.util.CHLogger;
+import com.changhong.util.bitmap.CHBitmapCacheWork;
 import com.changhong.util.db.bean.CacheManager;
 import com.llw.AppStore.R;
 
@@ -33,6 +48,11 @@ public class MyRecyclerAdapter extends
 	private Activity mContext;
 	private int type;
 	private String tag;
+	private CHBitmapCacheWork imgFetcher;
+	
+	private IASAccountService accountService = (IASAccountService) CHCareWebApiProvider.Self
+			.defaultInstance().getDefaultWebApiService(
+					WebApiServerType.AS_ACCOUNT_SERVER);
 
 	public MyRecyclerAdapter(Activity context, ArrayList<AppDownloadState> items, View headerView, int type) {
 		mInflater = LayoutInflater.from(context);
@@ -42,6 +62,8 @@ public class MyRecyclerAdapter extends
 		mContext = context;
 		this.type = type;
 		tag = MyTools.getTag(type);
+		imgFetcher = MyTools.getImageFetcher(context, (CHApplication)context.getApplication(), false, 0, 
+				DMUtil.getFacePhotoWidth(context), DMUtil.getFacePhotoHeight(context));
 	}
 
 	@Override
@@ -90,6 +112,13 @@ public class MyRecyclerAdapter extends
 			vh.size.setText(mContext.getString(R.string.da_string2, MyTools.float2String(item.getSize())));
 			
 			//logo
+			try {
+				imgFetcher.loadFormCache(item.getLogoUrl(), vh.logo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			vh.type.setText(item.getRealTag());
 			
 			//start activity
 			vh.whole.setOnClickListener(new OnClickListener() {
@@ -97,8 +126,24 @@ public class MyRecyclerAdapter extends
 				@Override
 				public void onClick(View v) {
 					try {
-						Intent intent = new Intent(mContext, DetailActivity.class);
-						intent.putExtra(DetailActivity.DATA, mItems.get(position - 1));
+						Intent intent = null;
+						if(CacheManager.INSTANCE.getCurrentUser() != null && CacheManager.INSTANCE.getCurrentUser().getRole() == Role.ADMIN){
+							intent = new Intent(mContext, EditDetailActivity.class);
+							intent.putExtra(Constant.APP_DETAIL, MyTools.toAppDetail(item));
+						}else{
+							intent = new Intent(mContext, DetailActivity.class);
+							intent.putExtra(DetailActivity.DATA, item);
+							
+							if(CacheManager.INSTANCE.getCurrentUser() != null && CacheManager.INSTANCE.getCurrentUser().getRole() == Role.CUSTOM){
+								accountService.uploadUserOperation(new int[]{item.getID()}, new AsyncResponseCompletedHandler<String>() {
+									
+									@Override
+									public String doCompleted(ResponseBean<?> response, ChCareWepApiServiceType servieType) {
+										return null;
+									}
+								});
+							}
+						}
 						mContext.startActivity(intent);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -107,72 +152,99 @@ public class MyRecyclerAdapter extends
 			});
 			
 			//operation state
-			switch (mItems.get(position - 1).getDownloadState()) {
-			case DownloadState.DOWNLOADING:
-				vh.state_img.setImageResource(R.drawable.pause);
-				vh.state_txt.setText(R.string.ma_string1);
+			int appType = item.getType();
+			if(appType == AppType.GAME || appType == AppType.APP){
+				switch (item.getDownloadState()) {
+				case DownloadState.DOWNLOADING:
+					vh.state_img.setImageResource(R.drawable.pause);
+					vh.state_txt.setText(R.string.ma_string1);
 //				vh.state_txt.setText(MyTools.float2String(item.getPercent()) + "%");
-				break;
-				
-			case DownloadState.DOWNLOADED:
+					break;
+					
+				case DownloadState.DOWNLOADED:
+					vh.state_img.setImageResource(R.drawable.install);
+					vh.state_txt.setText(R.string.install);
+					break;
+					
+				case DownloadState.PAUSE:
+					vh.state_img.setImageResource(R.drawable.continue_gray);
+					vh.state_txt.setText(R.string.continue_txt);
+					break;
+					
+				case DownloadState.INSTALLED:
+				case DownloadState.INSTALLED | DownloadState.DOWNLOADED:
+					vh.state_img.setImageResource(R.drawable.open);
+					vh.state_txt.setText(R.string.open_app);
+					break;
+					
+				case DownloadState.NONE:
+				default:
+					vh.state_img.setImageResource(R.drawable.download);
+					vh.state_txt.setText(R.string.download);
+					break;
+				}
+			}
+			else if(appType == AppType.WEB){
 				vh.state_img.setImageResource(R.drawable.install);
-				vh.state_txt.setText(R.string.install);
-				break;
-				
-			case DownloadState.PAUSE:
-				vh.state_img.setImageResource(R.drawable.continue_gray);
-				vh.state_txt.setText(R.string.continue_txt);
-				break;
-				
-			case DownloadState.INSTALLED:
-			case DownloadState.INSTALLED | DownloadState.DOWNLOADED:
-				vh.state_img.setImageResource(R.drawable.open);
-				vh.state_txt.setText(R.string.open_app);
-				break;
-				
-			case DownloadState.NONE:
-			default:
-				vh.state_img.setImageResource(R.drawable.download);
-				vh.state_txt.setText(R.string.download);
-				break;
+				vh.state_txt.setText(R.string.ma_string2);
 			}
 			
 			//dowaload operation
-			vh.operation.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					switch (item.getDownloadState()) {
-					case DownloadState.DOWNLOADING:
-						MyTools.pauseDownload(mItems.get(position - 1));
-						refreshItem(position - 1);
-						break;
+			if(CacheManager.INSTANCE.getCurrentUser() != null && CacheManager.INSTANCE.getCurrentUser().getRole() == Role.ADMIN){
+				vh.operation.setClickable(false);
+			}else{
+				vh.operation.setClickable(true);
+				if(item.getType() == AppType.GAME || item.getType() == AppType.APP){
+					vh.operation.setOnClickListener(new OnClickListener() {
 						
-					case DownloadState.DOWNLOADED:
-						MyTools.installApk(mContext, mItems.get(position - 1));
-						break;
-						
-					case DownloadState.PAUSE:
-						MyTools.continueDownload(mItems.get(position - 1));
-						refreshItem(position - 1);
-						break;
-						
-					case DownloadState.NONE:
-						if(MyTools.toLogin(mContext, item)){
-							
-						}else{
-							MyTools.startDownload(mItems.get(position - 1));
-							refreshItem(position - 1);
+						@Override
+						public void onClick(View v) {
+							switch (item.getDownloadState()) {
+							case DownloadState.DOWNLOADING:
+								MyTools.pauseDownload(item);
+								refreshItem(position - 1);
+								break;
+								
+							case DownloadState.DOWNLOADED:
+								MyTools.installApk(mContext, item);
+								break;
+								
+							case DownloadState.PAUSE:
+								MyTools.continueDownload(item);
+								refreshItem(position - 1);
+								break;
+								
+							case DownloadState.NONE:
+								if(MyTools.toLogin(mContext, item)){
+									
+								}else{
+									MyTools.startDownload(item);
+									refreshItem(position - 1);
+								}
+								break;
+								
+							case DownloadState.INSTALLED:
+							case DownloadState.INSTALLED | DownloadState.DOWNLOADED:
+								MyTools.openAnotherApp(mContext, item);
+								break;
+							}
 						}
-						break;
-						
-					case DownloadState.INSTALLED:
-					case DownloadState.INSTALLED | DownloadState.DOWNLOADED:
-						MyTools.openAnotherApp(mContext, mItems.get(position - 1));
-						break;
-					}
+					});
 				}
-			});
+				else if(item.getType() == AppType.WEB){
+					vh.operation.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							if(MyTools.toLogin(mContext, item)){
+								
+							}else{
+								MyTools.openWeb(mContext, item.getDownloadUrl());
+							}
+						}
+					});
+				}
+			}
 		}
 	}
 	

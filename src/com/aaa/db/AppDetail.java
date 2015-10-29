@@ -15,9 +15,9 @@ public class AppDetail  implements Serializable{
 	private int ID;
 	private String Name;//资源名字
 	private String LogoUrl;//logo
-	private String Tag;//分类
+	private String Tag;//分类//小标签
 	private int Order;//排列的顺序;
-	private byte Type;//apk（分为游戏、应用====）、网页、书籍，====
+	private byte Type;//apk（分为游戏、应用====）、网页、书籍，====//能否下载
 	private float Size;//保留小数点后一位，单位M
 	private String Desc;//详细描述
 	private String PackageName;//apk的包名
@@ -25,6 +25,9 @@ public class AppDetail  implements Serializable{
 	private String Version;
 	private String DownloadUrl;//下载地址、或者网页链接
 	private ArrayList<String> DescUrl;//描述图片，最多5张，最少3张
+	private int Owner;//(内部)上传者Id
+	private int DownCount;
+	private String UploadTime;
 	
 	public void setID(int i){
 		ID = i;
@@ -40,6 +43,30 @@ public class AppDetail  implements Serializable{
 	
 	public int getOrder(){
 		return Order;
+	}
+	
+	public void setUploadTime(String i){
+		UploadTime = i;
+	}
+	
+	public String getUploadTime(){
+		return UploadTime;
+	}
+	
+	public void setDownCount(int i){
+		DownCount = i;
+	}
+	
+	public int getDownCount(){
+		return DownCount;
+	}
+	
+	public void setOwner(int i){
+		Owner = i;
+	}
+	
+	public int getOwner(){
+		return Owner;
 	}
 	
 	public void setName(String i){

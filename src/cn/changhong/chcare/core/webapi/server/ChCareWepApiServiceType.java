@@ -17,6 +17,21 @@ package cn.changhong.chcare.core.webapi.server;
  */
 public enum ChCareWepApiServiceType {
 	
+	AS_Account_getVetufyCode("AS_Account_getVetufyCode"),
+	AS_Account_VetufyCode("AS_Account_VetufyCode"),
+	AS_Account_login("AS_Account_login"),
+	AS_Account_logout("AS_Account_logout"),
+	AS_Account_updateSelfMg("AS_Account_updateSelfMg"),
+	File_uploadFiles("File_uploadFiles"),
+	Admin_uploadAppDetail("Admin_uploadAppDetail"),
+	Admin_deleteApp("Admin_deleteApp"),
+	Account_getApps("Account_getApps"),
+	Account_uploadUserOperation("Account_uploadUserOperation"),
+	
+	
+	
+	
+	
 	WebApi_OfflineMsg_getUserOfflineMessage_Service("getUserOfflineMessage"),
 	WebApi_OfflineMsg_pollingMessage_Service("pollingMessage"),
 	WebApi_OfflineMsg_markMessage_Service("markMessage"),

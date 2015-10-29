@@ -18,8 +18,6 @@ package com.aaa.activity.main;
 
 import java.util.ArrayList;
 
-import javax.crypto.spec.PSource;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,14 +26,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import cn.changhong.chcare.core.webapi.bean.ResponseBean;
+import cn.changhong.chcare.core.webapi.handler.AsyncResponseCompletedHandler;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider;
+import cn.changhong.chcare.core.webapi.server.ChCareWepApiServiceType;
+import cn.changhong.chcare.core.webapi.server.IASAccountService;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider.WebApiServerType;
 
 import com.aaa.db.AppDetail;
 import com.aaa.db.AppDownloadState;
-import com.aaa.db.DownloadState;
-import com.aaa.util.Constant;
 import com.aaa.util.MyTools;
-import com.changhong.util.CHLogger;
 import com.changhong.util.db.bean.CacheManager;
 import com.changhong.util.download.DownLoadCallback;
 import com.changhong.util.download.DownloadManager;
@@ -48,10 +48,14 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
 
 	private int type;
 	private String tag;
-	private ArrayList<AppDownloadState> datas;
+	private ArrayList<AppDownloadState> datas = new ArrayList<AppDownloadState>();
 	private ArrayList<AppDetail> rawDatas;
 	private ObservableRecyclerView recyclerView;
 	private boolean hasInit = false;
+	
+	private IASAccountService accountService = (IASAccountService) CHCareWebApiProvider.Self
+			.defaultInstance().getDefaultWebApiService(
+					WebApiServerType.AS_ACCOUNT_SERVER);
 	
 	public FlexibleSpaceWithImageRecyclerViewFragment(int type){
 		this.type = type;
@@ -190,19 +194,14 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
  		});
     }
     
+    private Handler handler = new Handler();
     private void doGetData() {
-    	rawDatas = new ArrayList<AppDetail>();
-    	datas = new ArrayList<AppDownloadState>();
-    	
-    	//test
-    	Handler handler = new Handler();
-    	handler.postDelayed(new Runnable() {
-			
+    	accountService.getApps(null, new AsyncResponseCompletedHandler<String>() {
+
 			@Override
-			public void run() {
-				try {
-					test(type);
-					
+			public String doCompleted(ResponseBean<?> response, ChCareWepApiServiceType servieType) {
+				if(response.getState() >= 0 && response.getData() != null){
+					rawDatas = (ArrayList<AppDetail>) response.getData();
 					AppDownloadState ads;
 					for(AppDetail item : rawDatas){
 						ads = new AppDownloadState(item);
@@ -212,47 +211,17 @@ public class FlexibleSpaceWithImageRecyclerViewFragment extends FlexibleSpaceWit
 					
 					datas = CacheManager.INSTANCE.getAppData(tag);
 					refresh();
-				} catch (Exception e) {
-					e.printStackTrace();
+				}else{
+					handler.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							doGetData();
+						}
+					}, 2000);
 				}
+				return null;
 			}
-		}, 100);
+		});
     }
-    
-    private void test(int type){
-    	ArrayList<String> urls = new ArrayList<String>();
-    	urls.add("1");
-    	urls.add("2");
-    	urls.add("3");
-    	urls.add("4");
-    	for(int i = 1; i <= url.length; i++){
-    		AppDetail a1= new AppDetail();
-    		a1.setTag(Constant.MAIN_VIEW_SLIDE_TITLES[type]);
-			a1.setID(i * type + i);
-			a1.setName(Constant.MAIN_VIEW_SLIDE_TITLES[type] + i);
-			a1.setDownloadUrl(url[(i - 1) % url.length]);
-			a1.setSize(10.8f);
-			a1.setPackageName(pn[i - 1]);
-			a1.setDescUrl(urls);
-			rawDatas.add(a1);
-		}
-    }
-    
-    private static String[] url =
-    	{
-    			"http://apk.r1.market.hiapk.com/data/upload/marketClient/HiMarket6.0.86_1442302645972.apk",
-    			"http://apk.r1.market.hiapk.com/data/upload/apkres/2015/9_18/18/com.zrb_065008.apk",
-    			"http://apk.r1.market.hiapk.com/data/upload/apkres/2015/10_12/16/com.yixin.itoumi_041213.apk",
-    			"http://apk.r1.market.hiapk.com/data/upload/apkres/2015/10_15/17/com.creditease.zhiwang_050411.apk",
-    			"http://apk.r1.market.hiapk.com/data/upload/apkres/2015/9_30/15/com.solarbao.www_032123.apk",
-    			"http://apk.r1.market.hiapk.com/data/upload/apkres/2015/10_16/17/com.haier.hairy_052630.apk" };
-    
-    private static String[] pn =
-    	{
-    	"com.hiapk.marketpho",
-    	"com.zrb",
-    	"com.yixin.itoumi",
-    	"com.creditease.zhiwang",
-    	"com.solarbao.www",
-    	"com.haier.hairy" };
 }

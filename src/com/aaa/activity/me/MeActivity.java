@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,19 +15,29 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import cn.changhong.chcare.core.webapi.bean.ResponseBean;
+import cn.changhong.chcare.core.webapi.handler.AsyncResponseCompletedHandler;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider;
+import cn.changhong.chcare.core.webapi.server.ChCareWepApiServiceType;
+import cn.changhong.chcare.core.webapi.server.IASAccountService;
+import cn.changhong.chcare.core.webapi.server.IFileService;
+import cn.changhong.chcare.core.webapi.server.CHCareWebApiProvider.WebApiServerType;
+
 import com.aaa.activity.download.DownloadListAdapter;
 import com.aaa.activity.download.HeightChangeListener;
 import com.aaa.activity.login.LoginActivity;
 import com.aaa.db.AppDownloadState;
+import com.aaa.db.AppUser;
 import com.aaa.db.DownloadState;
 import com.aaa.util.Constant;
+import com.aaa.util.DMUtil;
 import com.aaa.util.MyTools;
 import com.aaa.util.PhotoType;
 import com.changhong.activity.BaseActivity;
 import com.changhong.activity.util.PictureUtil;
+import com.changhong.activity.widget.AppMainDialog;
 import com.changhong.activity.widget.PhotoSelectPopupView;
 import com.changhong.annotation.CHInjectView;
 import com.changhong.util.bitmap.CHBitmapCacheWork;
@@ -56,6 +67,13 @@ public class MeActivity extends BaseActivity{
 	private CHBitmapCacheWork imgFetcher;
 	private MyHandler handler;
 	
+	private IASAccountService accountService = (IASAccountService) CHCareWebApiProvider.Self
+			.defaultInstance().getDefaultWebApiService(
+					WebApiServerType.AS_ACCOUNT_SERVER);
+	private IFileService fileService = (IFileService) CHCareWebApiProvider.Self
+			.defaultInstance().getDefaultWebApiService(
+					WebApiServerType.FILE_SERVER);
+	
 	private class MyHandler extends Handler{
 		@Override
 		public void handleMessage(Message msg) {
@@ -82,10 +100,44 @@ public class MeActivity extends BaseActivity{
 				finish();
 			}
 		});
-		
+	}
+	
+	private void initLoginSateView(){
 		if(CacheManager.INSTANCE.getCurrentUser() != null){
+			login.setClickable(false);
 			login.setText(CacheManager.INSTANCE.getCurrentUser().getName());
+			findViewById(R.id.rl_right).setVisibility(View.VISIBLE);
+			findViewById(R.id.rl_right).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					final AppMainDialog dialog = new AppMainDialog(MeActivity.this, R.style.appdialog);
+					dialog.withTitle(R.string.dialog_title)
+					.withMessage(R.string.me_string5)
+					.setOKClick(R.string.ok_queren, new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View view) {
+							doLogout();
+							dialog.dismiss();
+						}
+					})
+					.setCancelClick(R.string.cancel_quxiao).show();
+				}
+			});
+			
+			photo.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					if(mPopupAltView == null){
+						mPopupAltView = new PhotoSelectPopupView(MeActivity.this);
+					}
+					mPopupAltView.show();
+				}
+			});
 		}else{
+			findViewById(R.id.rl_right).setVisibility(View.GONE);
 			login.setText(R.string.me_string2);
 			login.setOnClickListener(new OnClickListener() {
 				
@@ -97,31 +149,24 @@ public class MeActivity extends BaseActivity{
 			});
 		}
 		
-		photo.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(mPopupAltView == null){
-					mPopupAltView = new PhotoSelectPopupView(MeActivity.this);
-				}
-				mPopupAltView.show();
-			}
-		});
-		
 		if(CacheManager.INSTANCE.getCurrentUser() != null && CacheManager.INSTANCE.getCurrentUser().getPhoto() != null){
 			int photoSize = getResources().getDimensionPixelSize(R.dimen.me_activity_photo_zise);
-			imgFetcher = MyTools.getImageFetcher(this, getCHApplication(), false, 0, photoSize, photoSize);
+			imgFetcher = MyTools.getImageFetcher(this, getCHApplication(), true, 0, photoSize, photoSize);
 			try {
 				imgFetcher.loadFormCache(CacheManager.INSTANCE.getCurrentUser().getPhoto(), photo);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}else{
+			photo.setImageResource(R.drawable.face_bg);
 		}
 	}
 	
 	@Override
 	protected void onStart() {
 		super.onStart();
+		initLoginSateView();
+		
 		if(CacheManager.INSTANCE.getCurrentUser() == null || CacheManager.INSTANCE.getCurrentUser().getID() == 0){
 		}else{
 			login.setText(R.string.me_string2);
@@ -152,6 +197,25 @@ public class MeActivity extends BaseActivity{
 				downloded.add(item.clone());
 			}
 		}
+	}
+	
+	private void doLogout(){
+		accountService.logout(new AsyncResponseCompletedHandler<String>() {
+
+			@Override
+			public String doCompleted(ResponseBean<?> response,
+					ChCareWepApiServiceType servieType) {
+				if(response.getState() == 0){
+					CacheManager.INSTANCE.clearAllData();
+					MyTools.clearToken(MeActivity.this);
+					initLoginSateView();
+					hideAllDialog();
+				}else{
+					hideAllDialog();
+				}
+				return null;
+			}
+		});
 	}
 
 	private void initList() {
@@ -230,10 +294,12 @@ public class MeActivity extends BaseActivity{
 						File file = new File(mPhotoUri.getPath());
 						if(file.exists() && file.isFile()){
 							newPhotoPath = file.getPath();
-							photo.setImageBitmap(PictureUtil.
+							Bitmap tmp = PictureUtil.
 									decodeSampledBitmapFromFile(file.getPath(), 
 											photo.getWidth(), 
-											photo.getHeight()));
+											photo.getHeight());
+							photo.setImageBitmap(PictureUtil.toRoundBitmap(tmp, photo.getWidth(), photo.getHeight()));
+							doUpload();
 						}
 					}
 				}
@@ -241,5 +307,64 @@ public class MeActivity extends BaseActivity{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void doUpload(){
+		//upload photo
+		if(newPhotoPath != null){
+			ArrayList<String> newPhotos = new ArrayList<String>();
+			newPhotos.add(newPhotoPath);
+			
+//			showWaitDialog();
+			fileService.uploadFiles(newPhotos, DMUtil.getBidPhotoWidth(this), DMUtil.getBidPhotoHeight(this), 
+					new AsyncResponseCompletedHandler<String>() {
+				
+				@Override
+				public String doCompleted(ResponseBean<?> response,
+						ChCareWepApiServiceType servieType) {
+					if(response.getState() >= 0){
+						try {
+							ArrayList<String> photos = MyTools.splitPhoto((String)response.getData());
+							uploadUser(photos);
+						} catch (Exception e) {
+							e.printStackTrace();
+//							showToast(R.string.upload_fail);
+							hideAllDialog();
+						}
+					}else{
+//						showToast(R.string.upload_fail);
+						hideAllDialog();
+					}
+					return null;
+				}
+			});
+		}else{
+			uploadUser(null);
+		}
+	}
+	
+	private void uploadUser(ArrayList<String> photos){
+//		showWaitDialog();
+		final AppUser user = CacheManager.INSTANCE.getCurrentUser().clone();
+		if(photos != null && photos.size() > 0){
+			user.setPhoto(photos.get(0));
+		}
+		
+		accountService.updateSelfMg(user, new AsyncResponseCompletedHandler<String>() {
+
+			@Override
+			public String doCompleted(ResponseBean<?> response,
+					ChCareWepApiServiceType servieType) {
+				if(response != null && response.getState() >= 0){
+//					Toast.makeText(CustomRegisterActivity.this, R.string.set_success, Toast.LENGTH_LONG).show();
+					CacheManager.INSTANCE.setCurrentUser(user.clone());
+					hideAllDialog();
+				}else{
+//					Toast.makeText(CustomRegisterActivity.this, R.string.set_fail, Toast.LENGTH_SHORT).show();
+					hideAllDialog();
+				}
+				return null;
+			}
+		});
 	}
 }

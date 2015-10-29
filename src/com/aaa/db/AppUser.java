@@ -3,9 +3,10 @@ package com.aaa.db;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.changhong.util.CHLogger;
 import com.changhong.util.db.annotation.CHPrimaryKey;
 
-public class AppUser implements Serializable{
+public class AppUser implements Serializable, Cloneable{
 	/**
 	 * 
 	 */
@@ -13,9 +14,9 @@ public class AppUser implements Serializable{
 	@CHPrimaryKey
 	private int ID;
 	private String Name;
-	private ArrayList<AppDetail> DownloadHistory;//下载、浏览历史
 	private String Photo;//头像
 	private byte Role;
+	private ArrayList<AppDetail> DownloadHistory;//下载、浏览历史
 	
 	public void setID(int i){
 		ID = i;
@@ -55,5 +56,15 @@ public class AppUser implements Serializable{
 	
 	public ArrayList<AppDetail> getDownloadHistory(){
 		return DownloadHistory;
+	}
+	
+	public AppUser clone() {
+		AppUser o = null;
+		try {
+			o = (AppUser) super.clone();
+		} catch (CloneNotSupportedException e) {
+			CHLogger.e(this, e);
+		}
+		return o;
 	}
 }

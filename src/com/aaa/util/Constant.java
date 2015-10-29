@@ -16,6 +16,7 @@ public class Constant {
 	
 	public static final String APP_ID = "APP_ID";
 	public static final String APP_DOWNLOAD_STATE = "APP_DOWNLOAD_STATE";
+	public static final String APP_DETAIL = "APP_DETAIL";
 	
 	//主页app分类
 	public static final String[] MAIN_VIEW_SLIDE_TITLES = new String[]{"热点"};
@@ -36,5 +37,11 @@ public class Constant {
 	public static final String TEMP_SUFFIX = ".download";
 	
 	public static final String USERNAME = "USERNAME";
+	public static final String TOKEN = "TOKEN";
+	public static final String FILE_TOKEN = "FILE_TOKEN";
 	
+	public static final int MIN_DESC_IMG = 3;
+	public static final int MAX_DESC_IMG = 5;
+	
+	public static final int WELCOME_SHOW_TIME = 1500;
 }
